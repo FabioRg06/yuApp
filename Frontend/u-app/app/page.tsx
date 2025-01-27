@@ -1,0 +1,142 @@
+"use client"
+
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Sun, Moon } from "lucide-react"
+import Link from "next/link"
+import { register, login } from "./utils/api"
+import { toast } from "react-toastify"
+import "react-toastify/dist/ReactToastify.css"
+
+export default function AuthPage() {
+  const [activeTab, setActiveTab] = useState("login")
+  const [isLoading, setIsLoading] = useState(false)
+  const router = useRouter()
+
+  const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    setIsLoading(true)
+
+    const formData = new FormData(event.currentTarget)
+    const email = formData.get("email") as string
+    const password = formData.get("password") as string
+
+    try {
+      const data = await login(email, password)
+      toast.success("Inicio de sesión exitoso")
+      // Aquí puedes guardar el token de autenticación si el backend lo proporciona
+      localStorage.setItem("accessToken", data.access)
+      localStorage.setItem("refreshToken", data.refresh)
+      router.push("/home")
+    } catch (error) {
+      toast.error(
+        "Error en el inicio de sesión: " + (error instanceof Error ? error.message : "Ocurrió un error desconocido"),
+      )
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleRegister = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    setIsLoading(true)
+
+    const formData = new FormData(event.currentTarget)
+    const name = formData.get("name") as string
+    const email = formData.get("email") as string
+    const password = formData.get("password") as string
+    
+    try {
+      await register(name, email, password)
+      toast.success("Registro exitoso. Por favor, inicia sesión.")
+      setActiveTab("login")
+    } catch (error) {
+      toast.error("Error en el registro: " + (error instanceof Error ? error.message : "Ocurrió un error desconocido"))
+      console.log(error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  return (
+    <div className="min-h-screen bg-wayuu-sand dark:bg-wayuu-navy flex items-center justify-center p-4">
+      <Card className="w-full max-w-md bg-white/90 dark:bg-wayuu-blue/90 backdrop-blur-sm">
+        <CardHeader className="space-y-1">
+          <div className="flex justify-between items-center">
+            <CardTitle className="text-3xl font-bold text-wayuu-red font-display">YU</CardTitle>
+            <Button
+              variant="outline"
+              size="icon"
+              className="bg-wayuu-teal text-wayuu-navy hover:bg-wayuu-blue hover:text-wayuu-sand"
+            >
+              <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+              <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+              <span className="sr-only">Cambiar tema</span>
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <Tabs value={activeTab} onValueChange={setActiveTab}>
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="login">Iniciar sesión</TabsTrigger>
+              <TabsTrigger value="register">Registrarse</TabsTrigger>
+            </TabsList>
+            <TabsContent value="login">
+              <form onSubmit={handleLogin}>
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Correo electrónico</Label>
+                    <Input id="email" name="email" type="email" placeholder="tu@email.com" required />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="password">Contraseña</Label>
+                    <Input id="password" name="password" type="password" required />
+                  </div>
+                  <Button
+                    type="submit"
+                    className="w-full bg-wayuu-red hover:bg-wayuu-blue text-wayuu-sand"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? "Cargando..." : "Iniciar sesión"}
+                  </Button>
+                </div>
+              </form>
+            </TabsContent>
+            <TabsContent value="register">
+              <form onSubmit={handleRegister}>
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="name">Nombre</Label>
+                    <Input id="name" name="name" type="text" placeholder="Tu nombre" required />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Correo electrónico</Label>
+                    <Input id="email" name="email" type="email" placeholder="tu@email.com" required />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="password">Contraseña</Label>
+                    <Input id="password" name="password" type="password" required />
+                  </div>
+                  <Button
+                    type="submit"
+                    className="w-full bg-wayuu-red hover:bg-wayuu-blue text-wayuu-sand"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? "Cargando..." : "Registrarse"}
+                  </Button>
+                </div>
+              </form>
+            </TabsContent>
+          </Tabs>
+          
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
+
