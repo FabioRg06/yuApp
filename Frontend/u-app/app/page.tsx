@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState,useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Sun, Moon } from "lucide-react"
 import Link from "next/link"
 import { register, login } from "./utils/api"
+import { validateToken } from "./utils/auth"
 import { toast } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 
@@ -18,6 +19,26 @@ export default function AuthPage() {
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
 
+  // Validar token al cargar la página
+  useEffect(() => {
+    const checkToken = async () => {
+      const token = localStorage.getItem("accessToken")
+      if (token) {
+        try {
+          const isValid = await validateToken(token)
+          if (isValid) {
+            toast.success("Sesión activa, redirigiendo al inicio.")
+            router.push("/home")
+          }
+        } catch (error) {
+          console.log("Token inválido o expirado:", error)
+          localStorage.removeItem("accessToken")
+          localStorage.removeItem("refreshToken")
+        }
+      }
+    }
+    checkToken()
+  }, [router])
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     setIsLoading(true)

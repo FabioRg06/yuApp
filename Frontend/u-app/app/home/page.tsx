@@ -5,16 +5,15 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import LessonCard from "../components/LessonCard"
 import { Sun, Moon, Volume2, LogOut } from "lucide-react"
+import { withAuth } from "../utils/withAuth";
 
-export default function Home() {
+function Home() {
   const router = useRouter()
 
   const handleLogout = () => {
-    const handleLogout = () => {
       localStorage.removeItem('accessToken')
       localStorage.removeItem('refreshToken')
       router.push("/")
-    }
   }
 
   return (
@@ -83,3 +82,4 @@ export default function Home() {
   )
 }
 
+export default withAuth(Home)
