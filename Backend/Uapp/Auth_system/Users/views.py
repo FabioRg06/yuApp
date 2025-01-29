@@ -24,6 +24,9 @@ class RegisterView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class LoginView(APIView):
+    """
+    Autentica a un usuario y devuelve los tokens de acceso y refresco.
+    """
     def post(self, request):
         from django.contrib.auth import authenticate
         from django.contrib.auth import get_user_model
