@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import CustomUser
+from .models import UserProgress
 
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -17,3 +18,9 @@ class CustomUserSerializer(serializers.ModelSerializer):
         user.set_password(validated_data['password'])  # Hash de la contraseña
         user.save()
         return user
+
+class UserProgressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserProgress
+        fields = '__all__'
+
