@@ -22,5 +22,6 @@ urlpatterns = [
     path('api/user/', include('Auth_system.Users.urls')),
     path('api/token/',include('Auth_system.jwt_auth.urls')),
     path('api/chapters/',include('Content_system.Chapters.urls')),
-    path('api/lessons/',include('Content_system.Lessons.urls'))
+    path('api/lessons/',include('Content_system.Lessons.urls')),
+    path('api/tags/',include('Content_system.Tags.urls'))
 ]
