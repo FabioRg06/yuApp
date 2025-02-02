@@ -1,3 +1,69 @@
-from django.shortcuts import render
+from rest_framework import status
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from django.http import Http404
+from rest_framework.permissions import IsAuthenticated
+from .models import Lesson, LessonType
+from .serializers import (
+    LessonSerializer,
+    LessonTypeSerializer
+)
 
 # Create your views here.
+class LessonList(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, format=None):
+        lessons = Lesson.objects.all()
+        serializer = LessonSerializer(lessons, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = LessonSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class LessonDetail(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self, pk):
+        try:
+            return Lesson.objects.get(pk=pk)
+        except Lesson.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        lesson = self.get_object(pk)
+        serializer = LessonSerializer(lesson)
+        return Response(serializer.data)
+
+    def put(self, request, pk, format=None):
+        lesson = self.get_object(pk)
+        serializer = LessonSerializer(lesson, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk, format=None):
+        lesson = self.get_object(pk)
+        lesson.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+class LessonTypeList(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, format=None):
+        lesson_types = LessonType.objects.all()
+        serializer = LessonTypeSerializer(lesson_types, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = LessonTypeSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

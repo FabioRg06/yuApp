@@ -1,6 +1,6 @@
 from django.db import models
-from Tags.models import Tag
-from Lessons.models import Lesson
+from ..Tags.models import Tag
+from ..Lessons.models import Lesson
 # Create your models here.
 class WordPhrase(models.Model):
     text_wayuunaiki = models.CharField(max_length=200)

@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class ChaptersConfig(AppConfig):
+class QuestionsConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'Content_system.Chapters'
+    name = 'Content_system.Questions'

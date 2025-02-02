@@ -42,7 +42,12 @@ INSTALLED_APPS = [
      'corsheaders',
     'rest_framework_simplejwt',
     'Auth_system.Users',
-    'Auth_system.jwt_auth'
+    'Auth_system.jwt_auth',
+    'Content_system.Chapters',
+    'Content_system.Lessons',
+    'Content_system.Questions',
+    'Content_system.Tags',
+    'Content_system.WordPhrases'
 ]
 
 MIDDLEWARE = [
