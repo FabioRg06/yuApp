@@ -1,8 +1,9 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .models import CustomUser
-from .serializers import CustomUserSerializer
+from .models import CustomUser,UserProgress
+from .serializers import CustomUserSerializer,UserProgressSerializer
+from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 
 class CustomUserList(APIView):
@@ -11,6 +12,20 @@ class CustomUserList(APIView):
         custom_users = CustomUser.objects.all()
         serializer = CustomUserSerializer(custom_users, many=True)
         return Response(serializer.data)
+class UserProgressList(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, format=None):
+        progress_records = UserProgress.objects.all()
+        serializer = UserProgressSerializer(progress_records, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = UserProgressSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 class RegisterView(APIView):
     def post(self, request):
         serializer = CustomUserSerializer(data=request.data)
