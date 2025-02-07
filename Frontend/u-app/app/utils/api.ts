@@ -1,7 +1,7 @@
 export const API_BASE_URL = "http://127.0.0.1:8000"
 
 export async function register(username: string, email: string, password: string) {
-  const response = await fetch(`${API_BASE_URL}/user/register/`, {
+  const response = await fetch(`${API_BASE_URL}/api/user/register/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -19,7 +19,7 @@ export async function register(username: string, email: string, password: string
 }
 
 export async function login(email: string, password: string) {
-  const response = await fetch(`${API_BASE_URL}/user/login/`, {
+  const response = await fetch(`${API_BASE_URL}/api/user/login/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
