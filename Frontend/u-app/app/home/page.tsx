@@ -15,7 +15,7 @@ interface Lesson {
   title: string
   description: string
   icon: string
-  progress: 1
+  progress: number
 }
 interface Chapter {
   id: number
@@ -126,7 +126,7 @@ function Home() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {chapter.lessons.map((lesson) => (
                     <LessonCard
-                    key={lesson.id}
+                    key={`lesson-${lesson.id}`}
                     title={lesson.title}
                     description={lesson.description}
                     progress={lesson.progress}

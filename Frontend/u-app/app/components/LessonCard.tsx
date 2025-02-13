@@ -22,7 +22,10 @@ export default function LessonCard({ title, description, progress, href, icon }:
         </CardHeader>
         <CardContent>
           <p className="text-sm text-wayuu-navy dark:text-wayuu-sand mb-4">{description}</p>
-          <Progress value={progress} className="w-full bg-wayuu-teal" />
+          <div className="flex items-center">
+            <Progress value={progress} className="flex-grow bg-wayuu-teal" />
+            <span className="ml-2 text-sm font-medium text-wayuu-navy dark:text-wayuu-sand">{progress}%</span>
+          </div>
         </CardContent>
       </Card>
     </Link>

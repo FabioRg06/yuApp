@@ -14,12 +14,17 @@ class CustomUser(AbstractUser):
             self.password = make_password(self.password)
         super().save(*args, **kwargs)
 class UserProgress(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name="user_progress", null=True, blank=True)
-    completed = models.BooleanField(default=False)
-    completion_date = models.DateTimeField(auto_now=True)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="progress")
+    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name="progress")
+    progress = models.FloatField(default=0.0)  # 0.0 a 100.0%
+    completed = models.BooleanField(default=False)  # Indica si la lección está finalizada
 
-    def __str__(self):
-        if self.lesson:
-            return f"{self.user.username} - Lesson: {self.lesson.title}"
-        return f"{self.user.username} - Chapter: {self.chapter.title}"
+    class Meta:
+        unique_together = ('user', 'lesson')  # Evita duplicados de progreso por usuario y lección
+
+    def save(self, *args, **kwargs):
+        if self.progress >= 100.0:
+            self.completed = True
+        super().save(*args, **kwargs)
+
+
