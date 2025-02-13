@@ -2,8 +2,10 @@
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent} from "@/components/ui/card"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import LessonCard from "../components/LessonCard"
+import ChapterCard from "../components/ChapterCard"
 import Link from "next/link"
 import { Sun, Moon, Volume2, LogOut } from "lucide-react"
 import { withAuth } from "../utils/withAuth";
@@ -15,15 +17,23 @@ interface Lesson {
   icon: string
   progress: 1
 }
+interface Chapter {
+  id: number
+  title: string
+  description: string
+  progress: number
+  lessons: Lesson[]
+}
+
 function Home() {
   const router = useRouter()
-  const [lessons, setLessons] = useState<Lesson[]>([])
+  const [chapters, setChapters] = useState<Chapter[]>([])
   useEffect(() => {
-    const fetchLessons = async () => {
+    const fetchChapters = async () => {
       try {
         const token = localStorage.getItem("accessToken") // Obtener el token desde localStorage
   
-        const response = await fetch("http://localhost:8000/api/lessons", {
+        const response = await fetch("http://localhost:8000/api/chapters", {
           method: "GET",
           headers: {
             "Authorization": `Bearer ${token}`, // Enviar el token en el header
@@ -36,14 +46,12 @@ function Home() {
         }
   
         const data = await response.json()
-        setLessons(data)
-        console.log(data) // Usar 'data' en lugar de 'lessons'
+        setChapters(data)
       } catch (error) {
         console.error("Error fetching lessons:", error)
       }
     }
-  
-    fetchLessons()
+    fetchChapters()
   }, [])
   
   const handleLogout = () => {
@@ -81,6 +89,7 @@ function Home() {
                 size="icon"
                 className="bg-wayuu-teal text-wayuu-navy hover:bg-wayuu-blue hover:text-wayuu-sand"
               >
+                
                 <span className="sr-only">Configuración</span>
               </Button>
             </Link>
@@ -103,22 +112,33 @@ function Home() {
               ¡Bienvenido a tu aventura Wayuu!
             </h2>
             <p className="text-wayuu-navy dark:text-wayuu-sand">
-              Explora nuestra colección de lecciones divertidas y aprende el hermoso idioma Wayuu.
+              Explora nuestros capítulos y lecciones para aprender el hermoso idioma Wayuu.
             </p>
           </CardContent>
         </Card>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {lessons.map((lesson) => (
-            <LessonCard
-              key={lesson.id}
-              title={lesson.title}
-              description={lesson.description}
-              progress={lesson.progress}
-              href={`/lesson/${lesson.id}`}
-              icon={lesson.icon}
-            />
+        <Accordion type="single" collapsible className="space-y-4">
+          {chapters.map((chapter) => (
+            <AccordionItem key={chapter.id} value={`chapter-${chapter.id}`}>
+              <AccordionTrigger className="bg-white dark:bg-wayuu-blue p-4 rounded-t-xl">
+                <ChapterCard title={chapter.title} description={chapter.description} progress={chapter.progress} />
+              </AccordionTrigger>
+              <AccordionContent className="bg-white/90 dark:bg-wayuu-blue/90 p-4 rounded-b-xl">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {chapter.lessons.map((lesson) => (
+                    <LessonCard
+                    key={lesson.id}
+                    title={lesson.title}
+                    description={lesson.description}
+                    progress={lesson.progress}
+                    href={`/lesson/${lesson.id}`}
+                    icon={lesson.icon}
+                  />
+                  ))}
+                </div>
+              </AccordionContent>
+            </AccordionItem>
           ))}
-        </div>
+        </Accordion>
       </main>
     </div>
   )

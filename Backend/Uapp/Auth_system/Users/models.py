@@ -15,7 +15,6 @@ class CustomUser(AbstractUser):
         super().save(*args, **kwargs)
 class UserProgress(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    chapter = models.ForeignKey(Chapter, on_delete=models.CASCADE, related_name="user_progress", null=True, blank=True)
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name="user_progress", null=True, blank=True)
     completed = models.BooleanField(default=False)
     completion_date = models.DateTimeField(auto_now=True)
