@@ -19,11 +19,3 @@ class Question(models.Model):
     def __str__(self):
         return f"{self.lesson.title}: {self.text}"
 
-
-class Answer(models.Model):
-    question = models.ForeignKey(Question, related_name="answers", on_delete=models.CASCADE)
-    selected_word_phrase = models.ForeignKey(WordPhrase, on_delete=models.CASCADE, null=True, blank=True)
-    is_correct = models.BooleanField(default=False)
-
-    def __str__(self):
-        return f"Answer for Question {self.question.id} - Correct: {self.is_correct}"

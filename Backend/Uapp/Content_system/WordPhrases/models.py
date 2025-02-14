@@ -10,11 +10,3 @@ class WordPhrase(models.Model):
 
     def __str__(self):
         return f"{self.text_wayuunaiki} - {self.text_spanish}"
-
-
-class LessonWordPhrase(models.Model):
-    lesson = models.ForeignKey(Lesson, related_name="word_phrases", on_delete=models.CASCADE)
-    word_phrase = models.ForeignKey(WordPhrase, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return f"{self.lesson.title}: {self.word_phrase.text_wayuunaiki}"

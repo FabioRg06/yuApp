@@ -3,8 +3,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.http import Http404
 from rest_framework.permissions import IsAuthenticated
-from .models import Question, QuestionType, Answer
-from .serializers import  QuestionSerializer, AnswerSerializer,QuestionTypeSerializer
+from .models import Question, QuestionType
+from .serializers import  QuestionSerializer, QuestionTypeSerializer
 
 
 class QuestionList(APIView):
@@ -92,24 +92,3 @@ class QuestionTypeDetail(APIView):
         question_type = self.get_object(pk)
         question_type.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-
-class AnswerList(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request, format=None):
-        answers = Answer.objects.all()
-        serializer = AnswerSerializer(answers, many=True)
-        return Response(serializer.data)
-
-    def post(self, request, format=None):
-        serializer = AnswerSerializer(data=request.data)
-        if serializer.is_valid():
-            # Validación para verificar si la respuesta es correcta
-            question = serializer.validated_data['question']
-            selected_word_phrase = serializer.validated_data['selected_word_phrase']
-            is_correct = selected_word_phrase in question.correct_word_phrases.all()
-            serializer.save(is_correct=is_correct)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
