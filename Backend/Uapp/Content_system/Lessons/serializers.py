@@ -1,14 +1,16 @@
 from rest_framework import serializers
 from .models import Lesson  
 from Auth_system.Users.models import UserProgress
-
+from ..Questions.serializers import QuestionSerializer
 
 class LessonSerializer(serializers.ModelSerializer):
     # word_phrases = serializers.StringRelatedField(many=True, read_only=True)
     progress = serializers.SerializerMethodField(read_only=True)
+    questions=QuestionSerializer(many=True,read_only=True)
+    
     class Meta:
         model = Lesson
-        fields = ["title","chapter","description","icon","created_at","progress"]
+        fields = ["id","title","chapter","description","icon","created_at","progress","questions"]
     def get_progress(self, obj):
         """Obtiene el progreso del usuario autenticado para esta lección"""
         request = self.context.get('request')

@@ -18,6 +18,7 @@ class UserProgress(models.Model):
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name="progress")
     progress = models.FloatField(default=0.0)  # 0.0 a 100.0%
     completed = models.BooleanField(default=False)  # Indica si la lección está finalizada
+    score=models.FloatField(default=0.0)
 
     class Meta:
         unique_together = ('user', 'lesson')  # Evita duplicados de progreso por usuario y lección

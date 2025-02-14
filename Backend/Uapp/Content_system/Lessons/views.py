@@ -1,10 +1,13 @@
+import random
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.http import Http404
 from rest_framework.permissions import IsAuthenticated
 from Auth_system.Users.models import UserProgress
+from Content_system.WordPhrases.models import WordPhrase
 from .models import Lesson
+from ..Questions.models import Question, QuestionType
 from .serializers import (
     LessonSerializer
 )
@@ -44,12 +47,20 @@ class LessonDetail(APIView):
             raise Http404
 
     def get(self, request, pk, format=None):
-        """Obtiene una lección y crea UserProgress si no existe"""
+        """Obtiene una lección y genera preguntas dinámicamente según la cantidad definida en `questions_amount`."""
         lesson = self.get_object(pk)
 
-        # Crea el progreso si aún no existe
+        # Crea el progreso del usuario si no existe
         UserProgress.objects.get_or_create(user=request.user, lesson=lesson)
 
+        existing_questions_count = Question.objects.filter(lesson=lesson).count()
+        questions_needed = lesson.questions_amount - existing_questions_count
+
+        if questions_needed <= 0:
+            serializer = LessonSerializer(lesson, context={'request': request})
+            return Response(serializer.data)  
+        
+        generate_questions(lesson,questions_needed)
         serializer = LessonSerializer(lesson, context={'request': request})
         return Response(serializer.data)
 
@@ -84,3 +95,33 @@ class UpdateProgressView(APIView):
         user_progress.save()
 
         return Response({"message": "Progreso actualizado", "progress": user_progress.progress})
+def generate_questions(lesson,needed):
+        question_types = list(QuestionType.objects.all())
+        word_phrases = list(WordPhrase.objects.filter(lesson=lesson))
+
+        if not word_phrases or not question_types:
+            return Response({"error": "No hay suficientes datos para generar preguntas."}, status=400)
+
+
+        new_questions = []
+        for _ in range(needed):
+            question_type = random.choice(question_types)
+            correct_answer = random.choice(word_phrases)
+
+
+            question = Question(
+                lesson=lesson,
+                question_type=question_type,
+                correct_answer=correct_answer
+            )
+            new_questions.append(question)
+
+        # Crear todas las preguntas en una sola operación
+        created_questions = Question.objects.bulk_create(new_questions)
+
+        # Asignar opciones (una correcta y tres incorrectas) a cada pregunta
+        for question in created_questions:
+            incorrect_options = random.sample(
+                [wp for wp in word_phrases if wp != question.correct_answer], min(3, len(word_phrases) - 1)
+            )
+            question.options.set([question.correct_answer] + incorrect_options)
