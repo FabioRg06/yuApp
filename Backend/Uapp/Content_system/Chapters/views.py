@@ -15,7 +15,7 @@ class ChapterList(APIView):
 
     def get(self, request, format=None):
         chapters = Chapter.objects.all()
-        serializer = ChapterSerializer(chapters, many=True)
+        serializer = ChapterSerializer(chapters, many=True, context={"request": request})
         return Response(serializer.data)
 
     def post(self, request, format=None):

@@ -78,7 +78,26 @@ export default function LessonPage({ params }: { params: { id: string } }) {
     }
     fetchLessons()
   }, [])
+  const updateProgress = async () => {
+    try {
+      const token = localStorage.getItem("accessToken") // Obtener el token desde localStorage
+      const response = await fetch(`http://localhost:8000/api/lessons/${params.id}/progress/`, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`, // Enviar el token en el header
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({progress})
+      })
 
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`)
+      }
+
+    } catch (error) {
+      console.error("Error updating progress:", error)
+    }
+  }
   const handleAnswer = (answerId: number) => {
     if (!lesson) return
 
@@ -100,6 +119,7 @@ export default function LessonPage({ params }: { params: { id: string } }) {
         setIsLessonComplete(true)
       }
       setProgress(((currentQuestionIndex + 1) / lesson.questions.length) * 100)
+      updateProgress()
     } else {
       toast.error("Intenta de nuevo 😊", {
         position: "top-right",
