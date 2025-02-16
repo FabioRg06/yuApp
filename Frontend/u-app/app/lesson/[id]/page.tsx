@@ -9,43 +9,13 @@ import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import { toast } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
-
-interface QuestionType {
-  id: number
-  name: string
-  text: string
-}
-
-interface Option {
-  id: number
-  text_wayuunaiki: string
-  text_spanish: string
-  is_known: boolean
-  lesson: number
-}
-
-interface Question {
-  id: number
-  question_type: QuestionType
-  correct_answer: Option
-  options: Option[]
-  lesson: number
-}
-
-interface Lesson {
-  title: string
-  chapter: number
-  description: string
-  icon: string
-  created_at: string
-  progress: number
-  questions: Question[]
-}
-
+import { fetchLessons,updateProgress } from "@/app/utils/api"
+import { Lesson } from "@/app/utils/interfaces/interfaces"
+import { withAuth } from "@/app/utils/withAuth"
 // Sample lesson data (you would fetch this from an API in a real application)
 
 
-export default function LessonPage({ params }: { params: { id: string } }) {
+function LessonPage({ params }: { params: { id: string } }) {
   const router = useRouter()
   const [lesson, setLesson] = useState<Lesson | null>(null)
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
@@ -55,49 +25,10 @@ export default function LessonPage({ params }: { params: { id: string } }) {
 
 
   useEffect(() => {
-    const fetchLessons = async () => {
-      try {
-        const token = localStorage.getItem("accessToken") // Obtener el token desde localStorage
-        const response = await fetch(`http://localhost:8000/api/lessons/${params.id}`, {
-          method: "GET",
-          headers: {
-            "Authorization": `Bearer ${token}`, // Enviar el token en el header
-            "Content-Type": "application/json",
-          },
-        })
-  
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`)
-        }
-  
-        const data = await response.json()
-        setLesson(data)
-      } catch (error) {
-        console.error("Error fetching lessons:", error)
-      }
-    }
-    fetchLessons()
+    
+    fetchLessons(setLesson,params.id)
   }, [])
-  const updateProgress = async () => {
-    try {
-      const token = localStorage.getItem("accessToken") // Obtener el token desde localStorage
-      const response = await fetch(`http://localhost:8000/api/lessons/${params.id}/progress/`, {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${token}`, // Enviar el token en el header
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({progress})
-      })
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`)
-      }
-
-    } catch (error) {
-      console.error("Error updating progress:", error)
-    }
-  }
+  
   const handleAnswer = (answerId: number) => {
     if (!lesson) return
 
@@ -119,7 +50,7 @@ export default function LessonPage({ params }: { params: { id: string } }) {
         setIsLessonComplete(true)
       }
       setProgress(((currentQuestionIndex + 1) / lesson.questions.length) * 100)
-      updateProgress()
+      updateProgress(params.id,progress)
     } else {
       toast.error("Intenta de nuevo 😊", {
         position: "top-right",
@@ -203,3 +134,4 @@ export default function LessonPage({ params }: { params: { id: string } }) {
     </div>
   )
 }
+export default withAuth(LessonPage)

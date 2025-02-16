@@ -9,49 +9,16 @@ import ChapterCard from "../components/ChapterCard"
 import Link from "next/link"
 import { Sun, Moon, Volume2, LogOut } from "lucide-react"
 import { withAuth } from "../utils/withAuth";
+import { fetchChapters } from "../utils/api"
+import { Chapter} from "../utils/interfaces/interfaces"
 
-interface Lesson {
-  id: number
-  title: string
-  description: string
-  icon: string
-  progress: number
-}
-interface Chapter {
-  id: number
-  title: string
-  description: string
-  progress: number
-  lessons: Lesson[]
-}
 
 function Home() {
   const router = useRouter()
   const [chapters, setChapters] = useState<Chapter[]>([])
   useEffect(() => {
-    const fetchChapters = async () => {
-      try {
-        const token = localStorage.getItem("accessToken") // Obtener el token desde localStorage
-  
-        const response = await fetch("http://localhost:8000/api/chapters", {
-          method: "GET",
-          headers: {
-            "Authorization": `Bearer ${token}`, // Enviar el token en el header
-            "Content-Type": "application/json",
-          },
-        })
-  
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`)
-        }
-  
-        const data = await response.json()
-        setChapters(data)
-      } catch (error) {
-        console.error("Error fetching lessons:", error)
-      }
-    }
-    fetchChapters()
+    
+    fetchChapters(setChapters)
   }, [])
   
   const handleLogout = () => {
@@ -64,7 +31,7 @@ function Home() {
     <div className="min-h-screen bg-wayuu-sand dark:bg-wayuu-navy text-wayuu-navy dark:text-wayuu-sand">
       <header className="bg-white dark:bg-wayuu-blue shadow-md">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-3xl font-bold font-display text-wayuu-red">WayuuLingua</h1>
+          <h1 className="text-3xl font-bold font-display text-wayuu-red">YU</h1>
           <div className="flex space-x-2">
             <Button
               variant="outline"
@@ -83,16 +50,6 @@ function Home() {
               <Volume2 className="h-[1.2rem] w-[1.2rem]" />
               <span className="sr-only">Activar/Desactivar sonido</span>
             </Button>
-            <Link href="/configuracion">
-              <Button
-                variant="outline"
-                size="icon"
-                className="bg-wayuu-teal text-wayuu-navy hover:bg-wayuu-blue hover:text-wayuu-sand"
-              >
-                
-                <span className="sr-only">Configuración</span>
-              </Button>
-            </Link>
             <Button
               variant="outline"
               size="icon"
@@ -109,10 +66,10 @@ function Home() {
         <Card className="bg-white/80 dark:bg-wayuu-blue/80 backdrop-blur-sm mb-8 p-6 rounded-xl shadow-lg">
           <CardContent>
             <h2 className="text-2xl font-semibold mb-4 text-wayuu-red font-display">
-              ¡Bienvenido a tu aventura Wayuu!
+            Welcome to your Wayuu adventure!
             </h2>
             <p className="text-wayuu-navy dark:text-wayuu-sand">
-              Explora nuestros capítulos y lecciones para aprender el hermoso idioma Wayuu.
+            Explore our chapters and lessons to learn the beautiful Wayuu dialect.
             </p>
           </CardContent>
         </Card>

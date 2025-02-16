@@ -2,8 +2,8 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { validateToken, refreshAccessToken } from "./auth";
 
-export function withAuth(Component: React.FC) {
-  return function AuthenticatedComponent(props: any) {
+export function withAuth<T extends object>(Component: React.FC<T>) {
+  return function AuthenticatedComponent(props: T) {
     const router = useRouter();
 
     useEffect(() => {

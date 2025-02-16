@@ -1,38 +1,65 @@
 export const API_BASE_URL = "http://127.0.0.1:8000"
 
-export async function register(username: string, email: string, password: string) {
-  const response = await fetch(`${API_BASE_URL}/api/user/register/`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-    },
-    body: JSON.stringify({ username, email, password }),
-  })
+export async function fetchChapters(setChapters:any) {
+  try {
+    const token = localStorage.getItem("accessToken") // Obtener el token desde localStorage
 
-  if (!response.ok) {
-    const errorData = await response.json()
-    throw new Error(errorData.message || "Error en el registro")
+    const response = await fetch(`${API_BASE_URL}/api/chapters`, {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${token}`, // Enviar el token en el header
+        "Content-Type": "application/json",
+      },
+    })
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`)
+    }
+
+    const data = await response.json()
+    setChapters(data)
+  } catch (error) {
+    console.error("Error fetching lessons:", error)
   }
-
-  return response.json()
 }
+export async function fetchLessons(setLesson:any,id:string) {
+  try {
+    const token = localStorage.getItem("accessToken") // Obtener el token desde localStorage
+    const response = await fetch(`${API_BASE_URL}/api/lessons/${id}`, {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${token}`, // Enviar el token en el header
+        "Content-Type": "application/json",
+      },
+    })
 
-export async function login(email: string, password: string) {
-  const response = await fetch(`${API_BASE_URL}/api/user/login/`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-    },
-    body: JSON.stringify({ email, password }),
-  })
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`)
+    }
 
-  if (!response.ok) {
-    const errorData = await response.json()
-    throw new Error(errorData.message || "Error en el inicio de sesión")
+    const data = await response.json()
+    setLesson(data)
+  } catch (error) {
+    console.error("Error fetching lessons:", error)
   }
-
-  return response.json()
 }
+export async function updateProgress(id:string,progress:number) {
+    try {
+      const token = localStorage.getItem("accessToken") // Obtener el token desde localStorage
+      const response = await fetch(`${API_BASE_URL}/api/lessons/${id}/progress/`, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`, // Enviar el token en el header
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({progress})
+      })
 
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`)
+      }
+
+    } catch (error) {
+      console.error("Error updating progress:", error)
+    }
+  }

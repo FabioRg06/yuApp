@@ -1,8 +1,8 @@
-
+import { API_BASE_URL } from "./api";
 
 export async function validateToken(accessToken: string): Promise<boolean> {
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/token/validate-token/", {
+      const response = await fetch(`${API_BASE_URL}/api/token/validate-token/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -17,9 +17,9 @@ export async function validateToken(accessToken: string): Promise<boolean> {
     }
   }
 
-  export async function refreshAccessToken(refreshToken: string): Promise<string> {
+export async function refreshAccessToken(refreshToken: string): Promise<string> {
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/token/refresh/", {
+      const response = await fetch(`${API_BASE_URL}/api/token/refresh/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -44,4 +44,38 @@ export async function validateToken(accessToken: string): Promise<boolean> {
     }
   }
   
+export async function register(username: string, email: string, password: string) {
+    const response = await fetch(`${API_BASE_URL}/api/user/register/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({ username, email, password }),
+    })
   
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Error en el registro")
+    }
+  
+    return response.json()
+  }
+  
+export async function login(email: string, password: string) {
+    const response = await fetch(`${API_BASE_URL}/api/user/login/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    })
+  
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Error en el inicio de sesión")
+    }
+  
+    return response.json()
+  }
