@@ -1,6 +1,13 @@
+/** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: ["class"],
-  content: ["./pages/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./app/**/*.{ts,tsx}", "./src/**/*.{ts,tsx}"],
+  content: [
+    "./pages/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "./app/**/*.{ts,tsx}",
+    "./src/**/*.{ts,tsx}",
+    "*.{js,ts,jsx,tsx,mdx}",
+  ],
   theme: {
     container: {
       center: true,
@@ -50,6 +57,12 @@ module.exports = {
           teal: "#A8DADC",
           blue: "#457B9D",
           navy: "#1D3557",
+          dark: {
+            bg: "#121212",
+            card: "#1E1E1E",
+            text: "#E0E0E0",
+            muted: "#6C6C6C",
+          },
         },
       },
       borderRadius: {

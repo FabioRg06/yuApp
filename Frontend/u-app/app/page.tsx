@@ -13,12 +13,13 @@ import { register, login } from "./utils/auth"
 import { validateToken } from "./utils/auth"
 import { toast } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
+import { useTheme } from "./context/ThemeContext"
 
 export default function AuthPage() {
   const [activeTab, setActiveTab] = useState("login")
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
-
+  const { theme, toggleTheme } = useTheme()
   // Validar token al cargar la página
   useEffect(() => {
     const checkToken = async () => {
@@ -71,6 +72,7 @@ export default function AuthPage() {
     const name = formData.get("name") as string
     const email = formData.get("email") as string
     const password = formData.get("password") as string
+   
     
     try {
       await register(name, email, password)
@@ -85,18 +87,22 @@ export default function AuthPage() {
   }
 
   return (
-    <div className="min-h-screen bg-wayuu-sand dark:bg-wayuu-navy flex items-center justify-center p-4">
-      <Card className="w-full max-w-md bg-white/90 dark:bg-wayuu-blue/90 backdrop-blur-sm">
+    <div className="min-h-screen bg-wayuu-sand dark:bg-wayuu-dark-bg flex items-center justify-center p-4">
+      <Card className="w-full max-w-md bg-white/90 dark:bg-wayuu-dark-card backdrop-blur-sm">
         <CardHeader className="space-y-1">
           <div className="flex justify-between items-center">
-            <CardTitle className="text-3xl font-bold text-wayuu-red font-display">YU</CardTitle>
+            <CardTitle className="text-3xl font-bold text-wayuu-red font-display">WayuuLingua</CardTitle>
             <Button
               variant="outline"
               size="icon"
-              className="bg-wayuu-teal text-wayuu-navy hover:bg-wayuu-blue hover:text-wayuu-sand"
+              onClick={toggleTheme}
+              className="bg-wayuu-teal text-wayuu-navy hover:bg-wayuu-blue hover:text-wayuu-sand dark:bg-wayuu-red dark:text-wayuu-dark-text dark:hover:bg-wayuu-red/80"
             >
-              <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-              <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+              {theme === "light" ? (
+                <Sun className="h-[1.2rem] w-[1.2rem]" />
+              ) : (
+                <Moon className="h-[1.2rem] w-[1.2rem]" />
+              )}
               <span className="sr-only">Cambiar tema</span>
             </Button>
           </div>
@@ -120,7 +126,7 @@ export default function AuthPage() {
                   </div>
                   <Button
                     type="submit"
-                    className="w-full bg-wayuu-red hover:bg-wayuu-blue text-wayuu-sand"
+                    className="w-full bg-wayuu-red hover:bg-wayuu-red/80 text-white dark:bg-wayuu-red dark:hover:bg-wayuu-red/80 dark:text-wayuu-dark-text"
                     disabled={isLoading}
                   >
                     {isLoading ? "Cargando..." : "Iniciar sesión"}
@@ -145,7 +151,7 @@ export default function AuthPage() {
                   </div>
                   <Button
                     type="submit"
-                    className="w-full bg-wayuu-red hover:bg-wayuu-blue text-wayuu-sand"
+                    className="w-full bg-wayuu-red hover:bg-wayuu-red/80 text-white dark:bg-wayuu-red dark:hover:bg-wayuu-red/80 dark:text-wayuu-dark-text"
                     disabled={isLoading}
                   >
                     {isLoading ? "Cargando..." : "Registrarse"}
@@ -154,7 +160,6 @@ export default function AuthPage() {
               </form>
             </TabsContent>
           </Tabs>
-          
         </CardContent>
       </Card>
     </div>

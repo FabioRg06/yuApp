@@ -69,20 +69,20 @@ function LessonPage({ params }: { params: { id: string } }) {
   }
 
   return (
-    <div className="min-h-screen bg-wayuu-sand dark:bg-wayuu-navy text-wayuu-navy dark:text-wayuu-sand">
-      <header className="bg-white dark:bg-wayuu-blue shadow-md">
+    <div className="min-h-screen bg-wayuu-sand dark:bg-wayuu-dark-bg text-wayuu-navy dark:text-wayuu-dark-text">
+      <header className="bg-white dark:bg-wayuu-dark-card shadow-md">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <Link href="/home" className="text-wayuu-red hover:underline flex items-center">
             <ArrowLeft className="mr-2" /> Volver a los capítulos
           </Link>
           <div>
-            <h2 className="text-lg font-medium text-wayuu-navy dark:text-wayuu-sand">Capítulo {lesson.chapter}</h2>
+            <h2 className="text-lg font-medium text-wayuu-navy dark:text-wayuu-dark-text">Capítulo {lesson.chapter}</h2>
             <h1 className="text-2xl font-bold font-display text-wayuu-red">{lesson.title}</h1>
           </div>
         </div>
       </header>
       <main className="container mx-auto px-4 py-8">
-        <Card className="bg-white/80 dark:bg-wayuu-blue/80 backdrop-blur-sm mb-8 p-6 rounded-xl shadow-lg">
+        <Card className="bg-white/80 dark:bg-wayuu-dark-card backdrop-blur-sm mb-8 p-6 rounded-xl shadow-lg">
           <CardHeader>
             <CardTitle className="text-xl font-semibold text-wayuu-red">
               <span className="text-3xl mr-2">{lesson.icon}</span>
@@ -90,7 +90,7 @@ function LessonPage({ params }: { params: { id: string } }) {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <Progress value={progress} className="mb-4 bg-wayuu-teal" />
+            <Progress value={progress} className="mb-4 bg-wayuu-teal dark:bg-wayuu-red" />
             {!isLessonComplete ? (
               <div>
                 <h3 className="text-lg font-medium mb-4">
@@ -105,7 +105,7 @@ function LessonPage({ params }: { params: { id: string } }) {
                     <Button
                       key={option.id}
                       onClick={() => handleAnswer(option.id)}
-                      className="bg-wayuu-teal text-wayuu-navy hover:bg-wayuu-blue hover:text-wayuu-sand"
+                      className="bg-wayuu-teal text-wayuu-navy hover:bg-wayuu-blue hover:text-wayuu-sand dark:bg-wayuu-red dark:text-wayuu-dark-text dark:hover:bg-wayuu-red/80"
                     >
                       {option.text_spanish}
                     </Button>
@@ -119,10 +119,13 @@ function LessonPage({ params }: { params: { id: string } }) {
                 <p className="mb-4">
                   Respondiste correctamente {correctAnswers} de {lesson.questions.length} preguntas.
                 </p>
-                <Progress value={(correctAnswers / lesson.questions.length) * 100} className="mb-4 bg-wayuu-teal" />
+                <Progress
+                  value={(correctAnswers / lesson.questions.length) * 100}
+                  className="mb-4 bg-wayuu-teal dark:bg-wayuu-red"
+                />
                 <Button
                   onClick={() => router.push("/home")}
-                  className="bg-wayuu-red hover:bg-wayuu-blue text-wayuu-sand"
+                  className="bg-wayuu-red hover:bg-wayuu-blue text-wayuu-sand dark:bg-wayuu-red dark:text-wayuu-dark-text dark:hover:bg-wayuu-red/80"
                 >
                   Volver a los capítulos
                 </Button>
@@ -132,6 +135,7 @@ function LessonPage({ params }: { params: { id: string } }) {
         </Card>
       </main>
     </div>
+
   )
 }
 export default withAuth(LessonPage)

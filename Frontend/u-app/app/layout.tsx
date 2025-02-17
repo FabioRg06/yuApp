@@ -3,6 +3,9 @@ import type { Metadata } from "next"
 import { Poppins, Baloo_2 } from "next/font/google"
 import { ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
+import Link from "next/link"
+import type React from "react"
+import { ThemeProvider } from "./context/ThemeContext"
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -17,7 +20,7 @@ const baloo = Baloo_2({
 })
 
 export const metadata: Metadata = {
-  title: "WayuuLingua - Aprende el idioma Wayuu de forma divertida",
+  title: "YU-Learn new dialects",
   description: "Aprende el hermoso idioma Wayuu con lecciones interactivas y divertidas.",
 }
 
@@ -29,8 +32,10 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className={`${poppins.variable} ${baloo.variable} font-sans`}>
-        {children}
-        <ToastContainer />
+        <ThemeProvider>
+          <main>{children}</main>
+          <ToastContainer />
+        </ThemeProvider>
       </body>
     </html>
   )
