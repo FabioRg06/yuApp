@@ -12,7 +12,7 @@ import "react-toastify/dist/ReactToastify.css"
 import { fetchLessons,updateProgress } from "@/app/utils/api"
 import { Lesson } from "@/app/utils/interfaces/interfaces"
 import { withAuth } from "@/app/utils/withAuth"
-// Sample lesson data (you would fetch this from an API in a real application)
+
 
 
 function LessonPage({ params }: { params: { id: string } }) {
@@ -27,7 +27,8 @@ function LessonPage({ params }: { params: { id: string } }) {
   useEffect(() => {
     
     fetchLessons(setLesson,params.id)
-  }, [])
+    updateProgress(params.id, progress);
+  }, [progress])
   
   const handleAnswer = (answerId: number) => {
     if (!lesson) return
@@ -44,13 +45,14 @@ function LessonPage({ params }: { params: { id: string } }) {
         draggable: true,
         progress: undefined,
       })
+
       if (currentQuestionIndex < lesson.questions.length - 1) {
         setCurrentQuestionIndex(currentQuestionIndex + 1)
       } else {
         setIsLessonComplete(true)
       }
       setProgress(((currentQuestionIndex + 1) / lesson.questions.length) * 100)
-      updateProgress(params.id,progress)
+
     } else {
       toast.error("Intenta de nuevo 😊", {
         position: "top-right",

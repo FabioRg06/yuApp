@@ -37,5 +37,6 @@ export interface Lesson {
     created_at: string
     progress: number
     questions: Question[]
+    completed:boolean
   }
   

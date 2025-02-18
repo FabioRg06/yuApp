@@ -95,6 +95,7 @@ function Home() {
                       progress={lesson.progress}
                       href={`/lesson/${lesson.id}`}
                       icon={lesson.icon}
+                      completed={lesson.completed}
                     />
                   ))}
                 </div>
