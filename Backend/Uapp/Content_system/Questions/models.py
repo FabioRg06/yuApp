@@ -18,4 +18,3 @@ class Question(models.Model):
 
     def __str__(self):
         return f"{self.lesson.title}: {self.text}"
-
