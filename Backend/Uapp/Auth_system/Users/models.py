@@ -16,12 +16,12 @@ class CustomUser(AbstractUser):
 class UserProgress(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="progress")
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name="progress")
-    progress = models.FloatField(default=0.0)  # 0.0 a 100.0%
-    completed = models.BooleanField(default=False)  # Indica si la lección está finalizada
+    progress = models.FloatField(default=0.0) 
+    completed = models.BooleanField(default=False)  
     score=models.FloatField(default=0.0)
 
     class Meta:
-        unique_together = ('user', 'lesson')  # Evita duplicados de progreso por usuario y lección
+        unique_together = ('user', 'lesson')  
 
     def save(self, *args, **kwargs):
         if self.progress >= 100.0:
