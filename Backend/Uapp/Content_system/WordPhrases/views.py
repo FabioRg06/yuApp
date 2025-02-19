@@ -1,55 +1,25 @@
-from rest_framework import status
-from rest_framework.views import APIView
+from rest_framework import generics, status
 from rest_framework.response import Response
-from django.http import Http404
 from rest_framework.permissions import IsAuthenticated
-from .models import WordPhrase
-from .serializers import (
-    WordPhraseSerializer
-)
+from .serializers import WordPhraseSerializer
+from .services.word_phrase_service import WordPhraseService
 
-
-
-class WordPhraseList(APIView):
+class WordPhraseListCreateView(generics.ListCreateAPIView):
+    """Lista todas las palabras/frases o permite crear nuevas"""
+    serializer_class = WordPhraseSerializer
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, format=None):
-        word_phrases = WordPhrase.objects.all()
-        serializer = WordPhraseSerializer(word_phrases, many=True)
-        return Response(serializer.data)
+    def get_queryset(self):
+        return WordPhraseService.list_word_phrases()
 
-    def post(self, request, format=None):
-        serializer = WordPhraseSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def perform_create(self, serializer):
+        serializer.save()
 
-
-class WordPhraseDetail(APIView):
+class WordPhraseDetailView(generics.RetrieveUpdateDestroyAPIView):
+    """Ver, actualizar o eliminar una palabra/frase"""
+    serializer_class = WordPhraseSerializer
     permission_classes = [IsAuthenticated]
 
-    def get_object(self, pk):
-        try:
-            return WordPhrase.objects.get(pk=pk)
-        except WordPhrase.DoesNotExist:
-            raise Http404
-
-    def get(self, request, pk, format=None):
-        word_phrase = self.get_object(pk)
-        serializer = WordPhraseSerializer(word_phrase)
-        return Response(serializer.data)
-
-    def put(self, request, pk, format=None):
-        word_phrase = self.get_object(pk)
-        serializer = WordPhraseSerializer(word_phrase, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, pk, format=None):
-        word_phrase = self.get_object(pk)
-        word_phrase.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
+    def get_object(self):
+        word_phrase_id = self.kwargs["pk"]
+        return WordPhraseService.get_word_phrase(word_phrase_id)
