@@ -1,7 +1,7 @@
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from .services import QuestionService, QuestionOptionService, QuestionTypeService
+from .services.question_service import QuestionService, QuestionOptionService, QuestionTypeService
 from .serializers import QuestionSerializer, QuestionOptionSerializer, QuestionTypeSerializer
 
 class QuestionTypeListCreateView(generics.ListCreateAPIView):
