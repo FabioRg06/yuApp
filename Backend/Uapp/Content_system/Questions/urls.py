@@ -1,10 +1,12 @@
 from django.urls import path
-from .views import QuestionList,QuestionDetail, QuestionTypeList,QuestionTypeDetail
+from .views import (
+    QuestionListCreateView, QuestionDetailView,
+    QuestionOptionListCreateView, QuestionOptionDetailView
+)
 
 urlpatterns = [
-
-    path('', QuestionList.as_view(), name='question-list'),
-    path('<int:pk>/', QuestionDetail.as_view(), name='question-detail'),
-    path('question-types/', QuestionTypeList.as_view(), name='questiontype-list'),
-    path('question-types/<int:pk>/', QuestionTypeDetail.as_view(), name='questiontype-detail')
+    path('', QuestionListCreateView.as_view(), name='question-list'),
+    path('<int:pk>/', QuestionDetailView.as_view(), name='question-detail'),
+    path('options/', QuestionOptionListCreateView.as_view(), name='question-option-list'),
+    path('options/<int:pk>/', QuestionOptionDetailView.as_view(), name='question-option-detail'),
 ]

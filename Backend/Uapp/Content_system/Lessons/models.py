@@ -7,7 +7,6 @@ class Lesson(models.Model):
     description=models.CharField(max_length=200, null=True)
     icon=models.CharField(max_length=200, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    questions_amount=models.IntegerField(default=10)
 
     def __str__(self):
         return f"{self.title}:({self.description})"

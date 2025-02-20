@@ -12,9 +12,8 @@ class WordPhrase(models.Model):
 
     text_wayuunaiki = models.CharField(max_length=200)
     text_spanish = models.CharField(max_length=200)
-    type = models.CharField(max_length=10, choices=TYPE_CHOICES,default=(WORD, "Word"))  # Nuevo campo para diferenciar
-    tags = models.ManyToManyField(Tag, related_name="word_phrases")  # Eliminamos la coma que creaba una tupla
-    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
+    type = models.CharField(max_length=10, choices=TYPE_CHOICES,default=(WORD, "Word")) 
+    tags = models.ManyToManyField(Tag, related_name="word_phrases")  
     is_known = models.BooleanField(default=False)
 
     def __str__(self):

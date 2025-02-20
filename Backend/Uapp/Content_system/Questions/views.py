@@ -1,94 +1,53 @@
-from rest_framework import status
-from rest_framework.views import APIView
+from rest_framework import generics, status
 from rest_framework.response import Response
-from django.http import Http404
 from rest_framework.permissions import IsAuthenticated
-from .models import Question, QuestionType
-from .serializers import  QuestionSerializer, QuestionTypeSerializer
+from .services import QuestionService, QuestionOptionService, QuestionTypeService
+from .serializers import QuestionSerializer, QuestionOptionSerializer, QuestionTypeSerializer
 
-
-class QuestionList(APIView):
+class QuestionTypeListCreateView(generics.ListCreateAPIView):
+    """Maneja la lista y creación de tipos de preguntas."""
     permission_classes = [IsAuthenticated]
+    serializer_class = QuestionTypeSerializer
 
-    def get(self, request, format=None):
-        questions = Question.objects.all()
-        serializer = QuestionSerializer(questions, many=True)
-        return Response(serializer.data)
+    def get_queryset(self):
+        return QuestionTypeService.get_question_types()
 
-    def post(self, request, format=None):
-        serializer = QuestionSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def create(self, request, *args, **kwargs):
+        question_type = QuestionTypeService.create_question_type(**request.data)
+        return Response(QuestionTypeSerializer(question_type).data, status=status.HTTP_201_CREATED)
 
-
-class QuestionDetail(APIView):
+class QuestionTypeDetailView(generics.RetrieveDestroyAPIView):
+    """Maneja la obtención y eliminación de un tipo de pregunta."""
     permission_classes = [IsAuthenticated]
+    serializer_class = QuestionTypeSerializer
 
-    def get_object(self, pk):
-        try:
-            return Question.objects.get(pk=pk)
-        except Question.DoesNotExist:
-            raise Http404
+    def get_object(self):
+        return QuestionTypeService.get_question_type_by_id(self.kwargs.get("pk"))
 
-    def get(self, request, pk, format=None):
-        question = self.get_object(pk)
-        serializer = QuestionSerializer(question)
-        return Response(serializer.data)
-
-    def put(self, request, pk, format=None):
-        question = self.get_object(pk)
-        serializer = QuestionSerializer(question, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, pk, format=None):
-        question = self.get_object(pk)
-        question.delete()
+    def delete(self, request, *args, **kwargs):
+        QuestionTypeService.delete_question_type(self.kwargs.get("pk"))
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-class QuestionTypeList(APIView):
+class QuestionListCreateView(generics.ListCreateAPIView):
+    """Lista y crea preguntas."""
     permission_classes = [IsAuthenticated]
+    serializer_class = QuestionSerializer
 
-    def get(self, request, format=None):
-        question_types = QuestionType.objects.all()
-        serializer = QuestionTypeSerializer(question_types, many=True)
-        return Response(serializer.data)
+    def get_queryset(self):
+        return QuestionService.get_questions()
 
-    def post(self, request, format=None):
-        serializer = QuestionTypeSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def create(self, request, *args, **kwargs):
+        question = QuestionService.create_question(**request.data)
+        return Response(QuestionSerializer(question).data, status=status.HTTP_201_CREATED)
 
-
-class QuestionTypeDetail(APIView):
+class QuestionDetailView(generics.RetrieveDestroyAPIView):
+    """Obtiene y elimina una pregunta."""
     permission_classes = [IsAuthenticated]
+    serializer_class = QuestionSerializer
 
-    def get_object(self, pk):
-        try:
-            return QuestionType.objects.get(pk=pk)
-        except QuestionType.DoesNotExist:
-            raise Http404
+    def get_object(self):
+        return QuestionService.get_question_by_id(self.kwargs.get("pk"))
 
-    def get(self, request, pk, format=None):
-        question_type = self.get_object(pk)
-        serializer = QuestionTypeSerializer(question_type)
-        return Response(serializer.data)
-
-    def put(self, request, pk, format=None):
-        question_type = self.get_object(pk)
-        serializer = QuestionTypeSerializer(question_type, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, pk, format=None):
-        question_type = self.get_object(pk)
-        question_type.delete()
+    def delete(self, request, *args, **kwargs):
+        QuestionService.delete_question(self.kwargs.get("pk"))
         return Response(status=status.HTTP_204_NO_CONTENT)
