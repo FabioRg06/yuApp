@@ -1,29 +1,27 @@
 from rest_framework import serializers
-from .models import Lesson  
-from Auth_system.Users.models import UserProgress
+from .models import Lesson
+from Auth_system.Users.services.user_service import UserProgressService  # Importamos el servicio de progreso
 from ..Questions.serializers import QuestionSerializer
 
 class LessonSerializer(serializers.ModelSerializer):
-    # word_phrases = serializers.StringRelatedField(many=True, read_only=True)
     progress = serializers.SerializerMethodField(read_only=True)
-    questions=QuestionSerializer(many=True,read_only=True)
-    completed = serializers.SerializerMethodField(read_only=True) 
+    completed = serializers.SerializerMethodField(read_only=True)
+    questions = QuestionSerializer(many=True, read_only=True)
+
     class Meta:
         model = Lesson
-        fields = ["id","title","chapter","description","icon","created_at","progress","questions","completed"]
+        fields = ["id", "title", "chapter", "description", "icon", "created_at", "progress", "questions", "completed"]
+
     def get_progress(self, obj):
-        """Obtiene el progreso del usuario autenticado para esta lección"""
+        """Obtiene el progreso del usuario autenticado."""
         request = self.context.get('request')
         if request and request.user.is_authenticated:
-            user = request.user
-            user_progress = UserProgress.objects.filter(user=user, lesson=obj).first()
-            return user_progress.progress if user_progress else 0.0  # Si no hay progreso, retorna 0
+            return UserProgressService.get_progress(request.user, obj)
         return 0.0
+
     def get_completed(self, obj):
-        """Verifica si la lección está completada (progress == 100)"""
+        """Verifica si la lección está completada."""
         request = self.context.get('request')
         if request and request.user.is_authenticated:
-            user = request.user
-            user_progress = UserProgress.objects.filter(user=user, lesson=obj).first()
-            return user_progress.completed if user_progress else False  
+            return UserProgressService.is_completed(request.user, obj)
         return False

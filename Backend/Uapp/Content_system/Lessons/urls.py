@@ -1,8 +1,8 @@
 from django.urls import path
-from .views import LessonDetail,LessonList,UpdateProgressView
+from .views import LessonListCreateView, LessonDetailView,UpdateLessonProgressView
 
 urlpatterns = [
-    path('<int:pk>', LessonDetail.as_view(), name='Lesson-detail'),
-    path('', LessonList.as_view(), name='Lesson'),
-    path('<int:lesson_id>/progress/', UpdateProgressView.as_view(), name='update_progress'),
+    path('', LessonListCreateView.as_view(), name='lesson-list-create'),
+    path('<int:pk>/', LessonDetailView.as_view(), name='lesson-detail'),
+    path('<int:pk>/update-progress/', UpdateLessonProgressView.as_view(), name='update-lesson-progress'),
 ]
