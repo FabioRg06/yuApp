@@ -9,15 +9,17 @@ class QuestionTypeSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 class QuestionOptionSerializer(serializers.ModelSerializer):
+    word_phrase=WordPhraseSerializer(read_only=True)
     class Meta:
         model = QuestionOption
-        fields = "__all__"
+        fields =  ["question_id", "word_phrase", "is_correct"]
+
 
 
 class QuestionSerializer(serializers.ModelSerializer):
 
     question_type= QuestionTypeSerializer(read_only=True)
-    options = QuestionOptionSerializer(many=True, read_only=True) 
+    options = QuestionOptionSerializer(many=True,read_only=True) 
     class Meta:
         model = Question
         fields = ["id","lesson","question_type","text","options"]
