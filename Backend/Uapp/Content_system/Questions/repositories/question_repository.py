@@ -47,8 +47,9 @@ class QuestionOptionRepository:
         return QuestionOption.objects.get(id=option_id)
     
     @staticmethod
-    def create(**kwargs):
-        return QuestionOption.objects.create(**kwargs)
+    def create(data):
+        print(data)
+        return QuestionOption.objects.create(**data )
     
     @staticmethod
     def delete(option):

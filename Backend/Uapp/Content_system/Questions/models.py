@@ -25,7 +25,7 @@ class Question(models.Model):
 
 class QuestionOption(models.Model):
     """Opciones de respuesta para una pregunta (tanto selección como emparejamiento)."""
-    question = models.ForeignKey(Question, related_name="options", on_delete=models.CASCADE)
+    question_option = models.ForeignKey(Question, related_name="question_option", on_delete=models.CASCADE,null=True)
     word_phrase = models.ForeignKey(WordPhrase, on_delete=models.CASCADE)
     is_correct = models.BooleanField(default=False)  # Indica si esta opción es una respuesta válida
 

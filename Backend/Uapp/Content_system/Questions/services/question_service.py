@@ -29,7 +29,7 @@ class QuestionService:
     def get_questions():
         return QuestionRepository.get_all()
     
-    @staticmethod
+    @staticmethod 
     def get_question_by_id(question_id):
         return QuestionRepository.get_by_id(question_id)
     
@@ -41,8 +41,8 @@ class QuestionService:
 class QuestionOptionService:
     """Maneja la lógica de negocio de las opciones de pregunta."""
     @staticmethod
-    def create_option(**kwargs):
-        return QuestionOptionRepository.create(**kwargs)
+    def create_option(validated_data):
+        return QuestionOptionRepository.create(validated_data)
     
     @staticmethod
     def get_options():

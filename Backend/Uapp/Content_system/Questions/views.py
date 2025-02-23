@@ -59,8 +59,8 @@ class QuestionOptionListCreateView(generics.ListCreateAPIView):
     def get_queryset(self):
         return QuestionOptionService.get_options()
 
-    def create(self, request, *args, **kwargs):
-        question_option = QuestionOptionService.create_option(**request.data)
+    def perform_create(self, serializer):
+        question_option = QuestionOptionService.create_option(serializer.validated_data)
         return Response(QuestionOptionSerializer(question_option).data, status=status.HTTP_201_CREATED)
 
 class QuestionOptionDetailView(generics.RetrieveDestroyAPIView):
