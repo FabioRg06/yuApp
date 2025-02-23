@@ -3,8 +3,8 @@ from ..repositories.question_repository import QuestionRepository, QuestionOptio
 class QuestionTypeService:
     """Maneja la lógica de negocio para los tipos de preguntas."""
     @staticmethod
-    def create_question_type(**kwargs):
-        return QuestionTypeRepository.create(**kwargs)
+    def create_question_type(validated_data):
+        return QuestionTypeRepository.create(validated_data)
     
     @staticmethod
     def get_question_types():
@@ -22,8 +22,8 @@ class QuestionTypeService:
 class QuestionService:
     """Maneja la lógica de negocio de las preguntas."""
     @staticmethod
-    def create_question(**kwargs):
-        return QuestionRepository.create(**kwargs)
+    def create_question(validated_data):
+        return QuestionRepository.create(validated_data)
     
     @staticmethod
     def get_questions():

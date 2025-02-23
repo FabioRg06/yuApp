@@ -12,8 +12,8 @@ class QuestionTypeListCreateView(generics.ListCreateAPIView):
     def get_queryset(self):
         return QuestionTypeService.get_question_types()
 
-    def create(self, request, *args, **kwargs):
-        question_type = QuestionTypeService.create_question_type(**request.data)
+    def perform_create(self, serializer_class):
+        question_type = QuestionTypeService.create_question_type(serializer_class.validated_data)
         return Response(QuestionTypeSerializer(question_type).data, status=status.HTTP_201_CREATED)
 
 class QuestionTypeDetailView(generics.RetrieveDestroyAPIView):
@@ -36,8 +36,9 @@ class QuestionListCreateView(generics.ListCreateAPIView):
     def get_queryset(self):
         return QuestionService.get_questions()
 
-    def create(self, request, *args, **kwargs):
-        question = QuestionService.create_question(**request.data)
+    def perform_create(self, serializer_class):
+        question = QuestionService.create_question(serializer_class.validated_data)
+        print("view:",serializer_class.validated_data)
         return Response(QuestionSerializer(question).data, status=status.HTTP_201_CREATED)
 
 class QuestionDetailView(generics.RetrieveDestroyAPIView):

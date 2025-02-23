@@ -15,7 +15,7 @@ class QuestionType(models.Model):
 class Question(models.Model):
     """Modelo base para todas las preguntas."""
     lesson = models.ForeignKey(Lesson, related_name="questions", on_delete=models.CASCADE)
-    question_type = models.ForeignKey(QuestionType, on_delete=models.SET_NULL, null=True)
+    question_type = models.ForeignKey(QuestionType, related_name="question_type",on_delete=models.CASCADE)
     text = models.TextField()  # Enunciado de la pregunta
 
 

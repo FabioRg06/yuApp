@@ -11,8 +11,8 @@ class QuestionTypeRepository:
         return QuestionType.objects.get(id=type_id)
     
     @staticmethod
-    def create(**kwargs):
-        return QuestionType.objects.create(**kwargs)
+    def create(data):
+        return QuestionType.objects.create(**data)
     
     @staticmethod
     def delete(question_type):
@@ -29,8 +29,9 @@ class QuestionRepository:
         return Question.objects.get(id=question_id)
     
     @staticmethod
-    def create(**kwargs):
-        return Question.objects.create(**kwargs)
+    def create(data):
+        print(data)
+        #return Question.objects.create(**data)
     
     @staticmethod
     def delete(question):
@@ -49,7 +50,7 @@ class QuestionOptionRepository:
     @staticmethod
     def create(data):
         print(data)
-        return QuestionOption.objects.create(**data )
+        #return QuestionOption.objects.create(**data )
     
     @staticmethod
     def delete(option):

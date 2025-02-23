@@ -15,8 +15,9 @@ class LessonListCreateView(generics.ListCreateAPIView):
     def get_queryset(self):
         return LessonService.get_lessons()
 
-    def create(self, request, *args, **kwargs):
-        lesson = LessonService.create_lesson(**request.data)
+    def perform_create(self, serializer_class):
+        lesson = LessonService.create_lesson(serializer_class.validated_data)
+        serializer_class.instance = lesson
         return Response(LessonSerializer(lesson).data, status=status.HTTP_201_CREATED)
 
 class LessonDetailView(generics.RetrieveUpdateDestroyAPIView):

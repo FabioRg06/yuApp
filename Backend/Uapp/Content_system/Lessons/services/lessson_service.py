@@ -12,7 +12,7 @@ class LessonService:
         return LessonRepository.get_lesson_by_id(lesson_id)
 
     @staticmethod
-    def create_lesson(**data):
+    def create_lesson(data):
         return LessonRepository.create_lesson(data)
 
     @staticmethod

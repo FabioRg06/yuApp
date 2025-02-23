@@ -13,7 +13,8 @@ class LessonRepository:
 
     @staticmethod
     def create_lesson(data):
-        return Lesson.objects.create(**data)
+        lesson = Lesson.objects.create(**data)
+        return lesson 
 
     @staticmethod
     def update_lesson(lesson, data):
