@@ -30,8 +30,8 @@ class QuestionRepository:
     
     @staticmethod
     def create(data):
-        print(data)
-        #return Question.objects.create(**data)
+        question =Question.objects.create(**data)
+        return question
     
     @staticmethod
     def delete(question):
@@ -49,9 +49,8 @@ class QuestionOptionRepository:
     
     @staticmethod
     def create(data):
-        print(data)
-        #return QuestionOption.objects.create(**data )
-    
+        return QuestionOption.objects.create(**data )
+        
     @staticmethod
     def delete(option):
         option.delete()

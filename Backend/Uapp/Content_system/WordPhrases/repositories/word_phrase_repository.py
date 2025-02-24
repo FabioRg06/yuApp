@@ -23,3 +23,8 @@ class WordPhraseRepository:
     @staticmethod
     def delete(word_phrase):
         word_phrase.delete()
+    @staticmethod
+    def get_or_create_word_phrase(word_phrase_data):
+        """Obtiene o crea una WordPhrase"""
+        word_phrase, created = WordPhrase.objects.get_or_create(**word_phrase_data)
+        return word_phrase

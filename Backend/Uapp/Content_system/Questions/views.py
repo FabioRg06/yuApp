@@ -38,7 +38,7 @@ class QuestionListCreateView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer_class):
         question = QuestionService.create_question(serializer_class.validated_data)
-        print("view:",serializer_class.validated_data)
+        serializer_class.instance=question
         return Response(QuestionSerializer(question).data, status=status.HTTP_201_CREATED)
 
 class QuestionDetailView(generics.RetrieveDestroyAPIView):
@@ -62,7 +62,8 @@ class QuestionOptionListCreateView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         question_option = QuestionOptionService.create_option(serializer.validated_data)
-        return Response(QuestionOptionSerializer(question_option).data, status=status.HTTP_201_CREATED)
+        serializer.instance=question_option
+        return Response( status=status.HTTP_201_CREATED)
 
 class QuestionOptionDetailView(generics.RetrieveDestroyAPIView):
     """Obtiene y elimina una opción de respuesta."""
