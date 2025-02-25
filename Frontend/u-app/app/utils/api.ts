@@ -2,12 +2,12 @@ export const API_BASE_URL = "http://127.0.0.1:8000"
 
 export async function fetchChapters(setChapters:any) {
   try {
-    const token = localStorage.getItem("accessToken") // Obtener el token desde localStorage
+    const token = localStorage.getItem("accessToken") 
 
     const response = await fetch(`${API_BASE_URL}/api/chapters`, {
       method: "GET",
       headers: {
-        "Authorization": `Bearer ${token}`, // Enviar el token en el header
+        "Authorization": `Bearer ${token}`, 
         "Content-Type": "application/json",
       },
     })
@@ -24,11 +24,11 @@ export async function fetchChapters(setChapters:any) {
 }
 export async function fetchLessons(setLesson:any,id:string) {
   try {
-    const token = localStorage.getItem("accessToken") // Obtener el token desde localStorage
+    const token = localStorage.getItem("accessToken") 
     const response = await fetch(`${API_BASE_URL}/api/lessons/${id}`, {
       method: "GET",
       headers: {
-        "Authorization": `Bearer ${token}`, // Enviar el token en el header
+        "Authorization": `Bearer ${token}`, 
         "Content-Type": "application/json",
       },
     })
@@ -45,11 +45,11 @@ export async function fetchLessons(setLesson:any,id:string) {
 }
 export async function updateProgress(id:string,progress:number) {
     try {
-      const token = localStorage.getItem("accessToken") // Obtener el token desde localStorage
-      const response = await fetch(`${API_BASE_URL}/api/lessons/${id}/progress/`, {
-        method: "POST",
+      const token = localStorage.getItem("accessToken") 
+      const response = await fetch(`${API_BASE_URL}/api/lessons/${id}/update-progress/`, {
+        method: "PUT",
         headers: {
-          "Authorization": `Bearer ${token}`, // Enviar el token en el header
+          "Authorization": `Bearer ${token}`, 
           "Content-Type": "application/json",
         },
         body: JSON.stringify({progress})

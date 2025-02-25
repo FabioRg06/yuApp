@@ -57,7 +57,7 @@ export default function AuthPage() {
       router.push("/home")
     } catch (error) {
       toast.error(
-        "Error en el inicio de sesión: " + (error instanceof Error ? error.message : "Ocurrió un error desconocido"),
+        "Are you sure?" + (error instanceof Error ? error.message : "Unkwon Error"),
       )
     } finally {
       setIsLoading(false)

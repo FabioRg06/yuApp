@@ -5,13 +5,17 @@ import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
-import { ArrowLeft } from "lucide-react"
+import { ArrowLeft, CheckCircle } from "lucide-react"
 import Link from "next/link"
 import { toast } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import { fetchLessons,updateProgress } from "@/app/utils/api"
-import { Lesson } from "@/app/utils/interfaces/interfaces"
+import type { Lesson,Question } from "@/app/utils/interfaces/interfaces"
 import { withAuth } from "@/app/utils/withAuth"
+import { useTheme } from "@/app/context/ThemeContext"
+import MultipleChoiceQuestion from "@/app/components/MultipleChoiceQuestion"
+import TranslationQuestion from "@/app/components/TranslationQuestion"
+import MatchingQuestion from "@/app/components/MatchingQuestion"
 
 
 
@@ -20,54 +24,96 @@ function LessonPage({ params }: { params: { id: string } }) {
   const [lesson, setLesson] = useState<Lesson | null>(null)
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [progress, setProgress] = useState(0)
-  const [isLessonComplete, setIsLessonComplete] = useState(false)
+  const [lessonCompleted, setLessonCompleted] = useState(false)
   const [correctAnswers, setCorrectAnswers] = useState(0)
+  const { theme } = useTheme()
 
 
   useEffect(() => {
     
     fetchLessons(setLesson,params.id)
     updateProgress(params.id, progress);
-  }, [progress])
+  }, [params.id,progress])
   
-  const handleAnswer = (answerId: number) => {
-    if (!lesson) return
+  const handleMultipleChoiceAnswer = (answerId: number) => {
+    const currentQuestion = lesson!.questions[currentQuestionIndex]
+    const isCorrect = currentQuestion.question_option.find((opt) => opt.id === answerId)?.is_correct
 
-    const currentQuestion = lesson.questions[currentQuestionIndex]
-    if (answerId === currentQuestion.correct_answer.id) {
+    handleAnswerResult(isCorrect || false)
+  }
+
+  const handleTranslationAnswer = (answer: string) => {
+    const currentQuestion = lesson!.questions[currentQuestionIndex]
+    const correctAnswer = currentQuestion.question_option[0].word_phrase
+    const isCorrect =
+      answer.toLowerCase() === correctAnswer.text_spanish.toLowerCase() ||
+      answer.toLowerCase() === correctAnswer.text_wayuunaiki.toLowerCase()
+
+    handleAnswerResult(isCorrect)
+  }
+
+  const handleMatchingAnswer = (matches: { [key: number]: number }) => {
+    const currentQuestion = lesson!.questions[currentQuestionIndex]
+    // Check if the matched pairs have the same word_phrase.id
+    const isCorrect = Object.entries(matches).every(([leftId, rightId]) => {
+      const leftOption = currentQuestion.question_option.find((opt) => opt.id === Number.parseInt(leftId))
+      const rightOption = currentQuestion.question_option.find((opt) => opt.id === rightId)
+      return leftOption?.word_phrase.id === rightOption?.word_phrase.id
+    })
+
+    handleAnswerResult(isCorrect)
+  }
+
+  const handleAnswerResult = (isCorrect: boolean) => {
+    if (isCorrect) {
       setCorrectAnswers(correctAnswers + 1)
       toast.success("¡Correcto! 🎉", {
-        position: "top-right",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
+        theme: theme === "dark" ? "dark" : "light",
       })
-
-      if (currentQuestionIndex < lesson.questions.length - 1) {
+      if (currentQuestionIndex < lesson!.questions.length - 1) {
         setCurrentQuestionIndex(currentQuestionIndex + 1)
       } else {
-        setIsLessonComplete(true)
+        setLessonCompleted(true)
+        setProgress(100)
       }
-      setProgress(((currentQuestionIndex + 1) / lesson.questions.length) * 100)
-
+      const newProgress = ((currentQuestionIndex + 1) / lesson!.questions.length) * 100
+      setProgress(newProgress)
+      //updateProgress(params.id, newProgress);
     } else {
       toast.error("Intenta de nuevo 😊", {
-        position: "top-right",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
+        theme: theme === "dark" ? "dark" : "light",
       })
     }
   }
 
+  const renderQuestion = (question: Question) => {
+    switch (question.question_type.name) {
+      case "multiple selection":
+        return <MultipleChoiceQuestion question={question} onAnswer={handleMultipleChoiceAnswer} />
+      case "translation":
+        return <TranslationQuestion question={question} onAnswer={handleTranslationAnswer} />
+      case "matching":
+        return <MatchingQuestion question={question} onAnswer={handleMatchingAnswer} />
+      default:
+        return <div>Tipo de pregunta no soportado</div>
+    }
+  }
+
   if (!lesson) {
-    return <div>Cargando...</div>
+    return (
+      <div className="min-h-screen bg-wayuu-sand dark:bg-wayuu-dark-bg flex items-center justify-center">
+        <Card className="max-w-md mx-auto">
+          <CardContent className="text-center py-6">
+            <p className="text-wayuu-navy dark:text-wayuu-dark-text mb-4">
+              No se pudo cargar la lección. Por favor, intenta de nuevo.
+            </p>
+            <Button onClick={() => router.push("/home")} className="bg-wayuu-red text-white hover:bg-wayuu-red/80">
+              Volver al inicio
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    )
   }
 
   return (
@@ -93,29 +139,11 @@ function LessonPage({ params }: { params: { id: string } }) {
           </CardHeader>
           <CardContent>
             <Progress value={progress} className="mb-4 bg-wayuu-teal dark:bg-wayuu-red" />
-            {!isLessonComplete ? (
-              <div>
-                <h3 className="text-lg font-medium mb-4">
-                  {lesson.questions[currentQuestionIndex].question_type.text}
-                  <span className="font-bold">
-                    {" "}
-                    {lesson.questions[currentQuestionIndex].correct_answer.text_wayuunaiki}
-                  </span>
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {lesson.questions[currentQuestionIndex].options.map((option) => (
-                    <Button
-                      key={option.id}
-                      onClick={() => handleAnswer(option.id)}
-                      className="bg-wayuu-teal text-wayuu-navy hover:bg-wayuu-blue hover:text-wayuu-sand dark:bg-wayuu-red dark:text-wayuu-dark-text dark:hover:bg-wayuu-red/80"
-                    >
-                      {option.text_spanish}
-                    </Button>
-                  ))}
-                </div>
-              </div>
+            {!lessonCompleted ? (
+              renderQuestion(lesson.questions[currentQuestionIndex])
             ) : (
               <div className="text-center">
+                <CheckCircle className="mx-auto h-16 w-16 text-green-500 dark:text-green-400 mb-4" />
                 <h3 className="text-2xl font-bold mb-4">¡Felicidades!</h3>
                 <p className="mb-4">Has completado esta lección.</p>
                 <p className="mb-4">
@@ -127,7 +155,7 @@ function LessonPage({ params }: { params: { id: string } }) {
                 />
                 <Button
                   onClick={() => router.push("/home")}
-                  className="bg-wayuu-red hover:bg-wayuu-blue text-wayuu-sand dark:bg-wayuu-red dark:text-wayuu-dark-text dark:hover:bg-wayuu-red/80"
+                  className="bg-wayuu-red hover:bg-wayuu-red/80 text-white dark:bg-wayuu-red dark:hover:bg-wayuu-red/80 dark:text-wayuu-dark-text"
                 >
                   Volver a los capítulos
                 </Button>
@@ -137,7 +165,6 @@ function LessonPage({ params }: { params: { id: string } }) {
         </Card>
       </main>
     </div>
-
   )
 }
 export default withAuth(LessonPage)
