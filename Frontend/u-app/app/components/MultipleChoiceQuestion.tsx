@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import type { Question } from "../utils/interfaces/interfaces"
 
@@ -10,16 +11,28 @@ interface MultipleChoiceQuestionProps {
 
 export default function MultipleChoiceQuestion({ question, onAnswer }: MultipleChoiceQuestionProps) {
   // Randomly decide if we show Spanish or Wayuunaiki as options
-  const showSpanishOptions = Math.random() > 0.5
+  const [showSpanishOptions] = useState(Math.random() > 0.5)
 
   return (
     <div>
       <h3 className="text-lg font-medium mb-4">
         {question.text}{" "}
-        <span className="font-bold">
+        <span
+          className="font-bold relative group cursor-help border-b border-dotted border-wayuu-red"
+          title={
+            showSpanishOptions
+              ? question.question_option.find((opt) => opt.is_correct)?.word_phrase.text_spanish
+              : question.question_option.find((opt) => opt.is_correct)?.word_phrase.text_wayuunaiki
+          }
+        >
           {showSpanishOptions
             ? question.question_option.find((opt) => opt.is_correct)?.word_phrase.text_wayuunaiki
             : question.question_option.find((opt) => opt.is_correct)?.word_phrase.text_spanish}
+          <span className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-auto p-2 bg-wayuu-navy dark:bg-wayuu-dark-card text-white dark:text-wayuu-dark-text text-sm rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10 whitespace-nowrap">
+            {showSpanishOptions
+              ? question.question_option.find((opt) => opt.is_correct)?.word_phrase.text_spanish
+              : question.question_option.find((opt) => opt.is_correct)?.word_phrase.text_wayuunaiki}
+          </span>
         </span>
       </h3>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -36,4 +49,3 @@ export default function MultipleChoiceQuestion({ question, onAnswer }: MultipleC
     </div>
   )
 }
-
