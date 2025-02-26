@@ -1,3 +1,12 @@
+export interface Chapter {
+  id: number
+  title: string
+  description: string
+  progress: number
+  lessons: Lesson[]
+}
+
+
 export interface WordPhrase {
   id: number
   text_wayuunaiki: string
