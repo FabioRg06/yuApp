@@ -1,4 +1,4 @@
-import { API_BASE_URL } from "./api";
+import { API_BASE_URL } from "../api/api";
 
 export async function validateToken(accessToken: string): Promise<boolean> {
     try {

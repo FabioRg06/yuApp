@@ -1,4 +1,4 @@
-import "./globals.css"
+import "@/app/styles/globals.css"
 import type { Metadata } from "next"
 import { Poppins, Baloo_2 } from "next/font/google"
 import { ToastContainer } from "react-toastify"

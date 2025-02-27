@@ -9,7 +9,7 @@ import ChapterCard from "../components/ChapterCard"
 import Link from "next/link"
 import { Sun, Moon, Volume2, LogOut } from "lucide-react"
 import { withAuth } from "../utils/withAuth";
-import { fetchChapters } from "../utils/api"
+import { fetchChapters } from "../services/api/api"
 import { Chapter} from "../utils/interfaces/interfaces"
 import { useTheme } from "../context/ThemeContext"
 
