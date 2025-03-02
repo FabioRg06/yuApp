@@ -93,7 +93,7 @@ function Home() {
                       title={lesson.title}
                       description={lesson.description}
                       progress={lesson.progress}
-                      href={`/lesson/${lesson.id}`}
+                      href={`/pages/lesson/${lesson.id}`}
                       icon={lesson.icon}
                       completed={lesson.completed}
                     />
