@@ -107,7 +107,7 @@ function LessonPage({ params }: { params: { id: string } }) {
             <p className="text-wayuu-navy dark:text-wayuu-dark-text mb-4">
               No se pudo cargar la lección. Por favor, intenta de nuevo.
             </p>
-            <Button onClick={() => router.push("/home")} className="bg-wayuu-red text-white hover:bg-wayuu-red/80">
+            <Button onClick={() => router.push("/pages/home")} className="bg-wayuu-red text-white hover:bg-wayuu-red/80">
               Volver al inicio
             </Button>
           </CardContent>
@@ -120,7 +120,7 @@ function LessonPage({ params }: { params: { id: string } }) {
     <div className="min-h-screen bg-wayuu-sand dark:bg-wayuu-dark-bg text-wayuu-navy dark:text-wayuu-dark-text">
       <header className="bg-white dark:bg-wayuu-dark-card shadow-md">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <Link href="/home" className="text-wayuu-red hover:underline flex items-center">
+          <Link href="/pages/home" className="text-wayuu-red hover:underline flex items-center">
             <ArrowLeft className="mr-2" /> Volver a los capítulos
           </Link>
           <div>
@@ -154,7 +154,7 @@ function LessonPage({ params }: { params: { id: string } }) {
                   className="mb-4 bg-wayuu-teal dark:bg-wayuu-red"
                 />
                 <Button
-                  onClick={() => router.push("/home")}
+                  onClick={() => router.push("/pages/home")}
                   className="bg-wayuu-red hover:bg-wayuu-red/80 text-white dark:bg-wayuu-red dark:hover:bg-wayuu-red/80 dark:text-wayuu-dark-text"
                 >
                   Volver a los capítulos

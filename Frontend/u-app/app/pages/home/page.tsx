@@ -4,14 +4,14 @@ import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent} from "@/components/ui/card"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import LessonCard from "../components/LessonCard"
-import ChapterCard from "../components/ChapterCard"
+import LessonCard from "../../components/LessonCard"
+import ChapterCard from "../../components/ChapterCard"
 import Link from "next/link"
 import { Sun, Moon, Volume2, LogOut } from "lucide-react"
-import { withAuth } from "../utils/withAuth";
-import { fetchChapters } from "../services/api/api"
-import { Chapter} from "../utils/interfaces/interfaces"
-import { useTheme } from "../context/ThemeContext"
+import { withAuth } from "../../utils/withAuth";
+import { fetchChapters } from "../../services/api/api"
+import { Chapter} from "../../utils/interfaces/interfaces"
+import { useTheme } from "../../context/ThemeContext"
 
 
 function Home() {
