@@ -33,6 +33,11 @@ export function useAuth() {
       setIsLoading(false);
     }
   };
+  const handleLogout = () => {
+    localStorage.removeItem('accessToken')
+    localStorage.removeItem('refreshToken')
+    router.push("/")
+  }
   const checkToken = async () => {
     const token = localStorage.getItem("accessToken")
     if (token) {
@@ -50,5 +55,5 @@ export function useAuth() {
     }
   }
 
-  return { handleLogin, handleRegister,checkToken, isLoading };
+  return { handleLogin, handleRegister,checkToken, isLoading, handleLogout};
 }

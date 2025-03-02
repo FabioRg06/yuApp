@@ -20,7 +20,7 @@ export default function AuthPage() {
       <Card className="w-full max-w-md bg-white/90 dark:bg-wayuu-dark-card backdrop-blur-sm">
         <CardHeader className="space-y-1">
           <div className="flex justify-between items-center">
-            <CardTitle className="text-3xl font-bold text-wayuu-red font-display">WayuuLingua</CardTitle>
+            <CardTitle className="text-3xl font-bold text-wayuu-red font-display">YU</CardTitle>
             <Button variant="outline" size="icon" onClick={toggleTheme}>
               {theme === "light" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
             </Button>
