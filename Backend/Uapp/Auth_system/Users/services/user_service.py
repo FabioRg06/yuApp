@@ -1,6 +1,6 @@
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
-from ..repositories.user_repository import UserRepository,UserProgressRepository
+from ..repositories.user_repository import UserRepository,UserProgressRepository,RoleRepository
 
 class UserService:
     @staticmethod
@@ -43,3 +43,33 @@ class UserProgressService:
         if not (0.0 <= progress <= 100.0):
             raise ValueError("El progreso debe estar entre 0 y 100")
         return UserProgressRepository.update_or_create_progress(user, lesson, progress)
+
+class RoleService:
+    """Maneja la lógica de negocio para los roles."""
+
+    @staticmethod
+    def get_roles():
+        return RoleRepository.get_all_roles()
+
+    @staticmethod
+    def get_role_by_id(role_id):
+        return RoleRepository.get_role_by_id(role_id)
+
+    @staticmethod
+    def create_role(data):
+        return RoleRepository.create_role(data)
+
+    @staticmethod
+    def update_role(role_id, data):
+        role = RoleRepository.get_role_by_id(role_id)
+        if role:
+            return RoleRepository.update_role(role, data)
+        return None
+
+    @staticmethod
+    def delete_role(role_id):
+        role = RoleRepository.get_role_by_id(role_id)
+        if role:
+            RoleRepository.delete_role(role)
+
+

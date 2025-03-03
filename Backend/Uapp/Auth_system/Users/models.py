@@ -6,8 +6,11 @@ from django.contrib.auth.hashers import make_password
 from Content_system.Chapters.models import Chapter
 from Content_system.Lessons.models import Lesson
 
+class Role(models.Model):
+    name=models.CharField(default="student", max_length=50)
 class CustomUser(AbstractUser):
     email = models.EmailField(unique=True)
+    role=models.ForeignKey(Role, default=1,on_delete=models.CASCADE, related_name="role")
 
     def save(self, *args, **kwargs):
         if not self.pk:  # Solo aplica cuando se crea un usuario

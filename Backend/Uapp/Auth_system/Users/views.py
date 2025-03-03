@@ -1,9 +1,9 @@
 from rest_framework import status, generics
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from .serializers import CustomUserSerializer, UserProgressSerializer
-from .services.user_service import UserService
-from .repositories.user_repository import UserProgressRepository
+from .serializers import CustomUserSerializer, RoleSerializer, UserProgressSerializer
+from .services.user_service import RoleService, UserService
+from .repositories.user_repository import RoleRepository, UserProgressRepository
 
 class RegisterView(generics.CreateAPIView):
     """Registra un usuario y devuelve los tokens"""
@@ -36,3 +36,34 @@ class UserProgressList(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save()
+class RoleList(generics.ListCreateAPIView):
+    """Lista el progreso del usuario o permite crearlo"""
+    serializer_class = RoleSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return RoleRepository.get_all_roles()
+
+    def perform_create(self, serializer):
+        serializer.save()
+class RoleDetailView(generics.RetrieveUpdateDestroyAPIView):
+    """Obtiene, actualiza y elimina una lección."""
+    permission_classes = [IsAuthenticated]
+    serializer_class = RoleSerializer
+
+    def get_object(self):
+        return RoleService.get_rol_by_id(self.kwargs.get("pk"))
+
+    def put(self, request, *args, **kwargs):
+        role = self.get_object()
+        updated_role = RoleService.update_role(role.id, request.data)
+        if updated_role:
+            return Response(RoleSerializer(updated_role).data)
+        return Response({"error": "Lección no encontrada"}, status=status.HTTP_404_NOT_FOUND)
+
+    def delete(self, request, *args, **kwargs):
+        role = self.get_object()
+        if role:
+            RoleService.delete_role(role.id)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response({"error": "Lección no encontrada"}, status=status.HTTP_404_NOT_FOUND)

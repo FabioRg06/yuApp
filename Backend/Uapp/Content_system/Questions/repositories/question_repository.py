@@ -50,7 +50,6 @@ class QuestionOptionRepository:
     @staticmethod
     def create(data):
         return QuestionOption.objects.create(**data )
-        
     @staticmethod
     def delete(option):
         option.delete()

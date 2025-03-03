@@ -1,4 +1,31 @@
-from ..models import CustomUser, UserProgress
+from ..models import CustomUser, UserProgress,Role
+
+class RoleRepository:
+    """Maneja la interacción con la base de datos para las lecciones."""
+
+    @staticmethod
+    def get_all_roles():
+        return Role.objects.all()
+
+    @staticmethod
+    def get_role_by_id(lesson_id):
+        return Role.objects.filter(id=lesson_id).first()
+
+    @staticmethod
+    def create_role(data):
+        role = Role.objects.create(**data)
+        return role
+
+    @staticmethod
+    def update_role(role, data):
+        for key, value in data.items():
+            setattr(role, key, value)
+        role.save()
+        return role
+
+    @staticmethod
+    def delete_role(role):
+        role.delete()
 
 class UserRepository:
     @staticmethod

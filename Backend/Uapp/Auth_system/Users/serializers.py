@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .repositories.user_repository import UserRepository
-from .models import CustomUser, UserProgress
+from .models import CustomUser, UserProgress,Role
 
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -17,3 +17,8 @@ class UserProgressSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProgress
         fields = '__all__'
+
+class RoleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Role
+        fields='__all__'
