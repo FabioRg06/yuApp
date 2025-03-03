@@ -2,6 +2,7 @@ export interface Chapter {
   id: number
   title: string
   description: string
+  created_at:string
   progress: number
   lessons: Lesson[]
 }
