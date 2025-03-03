@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import {
@@ -18,32 +18,20 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Plus, Pencil, Trash2 } from "lucide-react"
+import { Chapter } from "@/app/utils/interfaces/interfaces"
+import { fetchChapters } from "@/app/services/api/api"
+import { createChapter, deleteChapter, updateChapter } from "@/app/services/api/chapters/api"
 
-interface Chapter {
-  id: number
-  title: string
-  description: string
-  progress: number
-}
 
 export default function ChaptersPage() {
-  const [chapters, setChapters] = useState<Chapter[]>([
-    {
-      id: 1,
-      title: "Saludos y Presentaciones",
-      description: "Aprende a saludar y presentarte en Wayuu",
-      progress: 75,
-    },
-    {
-      id: 2,
-      title: "Números y Colores",
-      description: "Descubre los números y colores en Wayuu",
-      progress: 33,
-    },
-  ])
+  const [chapters, setChapters] = useState<Chapter[]>([])
 
   const [isOpen, setIsOpen] = useState(false)
   const [editingChapter, setEditingChapter] = useState<Chapter | null>(null)
+  useEffect(() => {
+      fetchChapters(setChapters)
+      console.log(chapters)
+    }, [])
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -53,20 +41,13 @@ export default function ChaptersPage() {
 
     if (editingChapter) {
       // Update existing chapter
+      updateChapter(editingChapter.id,title,description)
       setChapters(
         chapters.map((chapter) => (chapter.id === editingChapter.id ? { ...chapter, title, description } : chapter)),
       )
     } else {
       // Create new chapter
-      setChapters([
-        ...chapters,
-        {
-          id: chapters.length + 1,
-          title,
-          description,
-          progress: 0,
-        },
-      ])
+      createChapter(title,description)
     }
 
     setIsOpen(false)
@@ -80,6 +61,7 @@ export default function ChaptersPage() {
 
   const handleDelete = (id: number) => {
     setChapters(chapters.filter((chapter) => chapter.id !== id))
+    deleteChapter(id)
   }
 
   return (

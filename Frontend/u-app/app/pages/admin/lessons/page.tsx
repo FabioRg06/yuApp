@@ -19,37 +19,14 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Plus, Pencil, Trash2 } from "lucide-react"
-
-interface Lesson {
-  id: number
-  chapterId: number
-  title: string
-  description: string
-  icon: string
-}
-
+import { Lesson } from "@/app/utils/interfaces/interfaces"
 const chapters = [
   { id: 1, title: "Saludos y Presentaciones" },
   { id: 2, title: "Números y Colores" },
 ]
 
 export default function LessonsPage() {
-  const [lessons, setLessons] = useState<Lesson[]>([
-    {
-      id: 1,
-      chapterId: 1,
-      title: "Saludos básicos",
-      description: "Aprende los saludos más comunes en Wayuu",
-      icon: "👋",
-    },
-    {
-      id: 2,
-      chapterId: 1,
-      title: "Presentaciones",
-      description: "Aprende a presentarte y preguntar nombres",
-      icon: "🙋‍♂️",
-    },
-  ])
+  const [lessons, setLessons] = useState<Lesson[]>([])
 
   const [isOpen, setIsOpen] = useState(false)
   const [editingLesson, setEditingLesson] = useState<Lesson | null>(null)
@@ -71,16 +48,7 @@ export default function LessonsPage() {
       )
     } else {
       // Create new lesson
-      setLessons([
-        ...lessons,
-        {
-          id: lessons.length + 1,
-          title,
-          description,
-          chapterId,
-          icon,
-        },
-      ])
+      setLessons([])
     }
 
     setIsOpen(false)
@@ -116,7 +84,7 @@ export default function LessonsPage() {
               <div className="space-y-4 py-4">
                 <div className="space-y-2">
                   <Label htmlFor="chapterId">Capítulo</Label>
-                  <Select name="chapterId" defaultValue={editingLesson?.chapterId.toString()} required>
+                  <Select name="chapterId" defaultValue={editingLesson?.chapter.toString()} required>
                     <SelectTrigger>
                       <SelectValue placeholder="Selecciona un capítulo" />
                     </SelectTrigger>
@@ -172,7 +140,7 @@ export default function LessonsPage() {
                 <span className="text-2xl">{lesson.icon}</span>
                 <div>
                   <CardTitle>{lesson.title}</CardTitle>
-                  <CardDescription>{chapters.find((c) => c.id === lesson.chapterId)?.title}</CardDescription>
+                  <CardDescription>{chapters.find((c) => c.id === lesson.chapter)?.title}</CardDescription>
                 </div>
               </div>
             </CardHeader>
