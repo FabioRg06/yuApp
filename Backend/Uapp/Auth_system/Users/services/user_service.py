@@ -2,6 +2,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from ..repositories.user_repository import UserRepository,UserProgressRepository,RoleRepository
 
+
 class UserService:
     @staticmethod
     def register_user(validated_data):
@@ -21,9 +22,10 @@ class UserService:
     def generate_tokens(user):
         """Genera tokens de acceso y refresco para un usuario"""
         refresh = RefreshToken.for_user(user)
+        refresh.access_token['role'] = user.role  
         return {
             'refresh': str(refresh),
-            'access': str(refresh.access_token),
+            'access': str(refresh.access_token)
         }
 
 
