@@ -1,6 +1,5 @@
 "use client"
 import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
 import { withAuth } from "@/app/utils/withAuth"
 import { fetchChapters } from "@/app/services/api/api"
 import { Chapter } from "@/app/utils/interfaces/interfaces"
@@ -11,7 +10,6 @@ import ChapterList from "@/app/components/home/ChapterList"
 import { useAuth } from "@/app/hooks/useAuth"
 
 function Home() {
-  const router = useRouter()
   const [chapters, setChapters] = useState<Chapter[]>([])
   const { theme, toggleTheme } = useTheme()
   const {handleLogout}= useAuth()

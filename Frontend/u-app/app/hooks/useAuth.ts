@@ -14,7 +14,7 @@ export function useAuth() {
       toast.success("Inicio de sesión exitoso");
       localStorage.setItem("accessToken", data.access);
       localStorage.setItem("refreshToken", data.refresh);
-      router.push("/home");
+      router.push("/pages/home");
     } catch (error) {
       toast.error("Error: " + (error instanceof Error ? error.message : "Desconocido"));
     } finally {
