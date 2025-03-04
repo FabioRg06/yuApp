@@ -2,9 +2,9 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle,CardFooter } from "@/components/ui/card"
 import {
   Dialog,
   DialogContent,
@@ -18,18 +18,22 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { Plus, Pencil, Trash2 } from "lucide-react"
-import { Lesson } from "@/app/utils/interfaces/interfaces"
-const chapters = [
-  { id: 1, title: "Saludos y Presentaciones" },
-  { id: 2, title: "Números y Colores" },
-]
+import { Plus, Pencil, Trash2, FileQuestion } from "lucide-react"
+import Link from "next/link"
+import { Chapter, Lesson } from "@/app/utils/interfaces/interfaces"
+import { createLesson, deleteLesson, fetchLessons, updateLesson } from "@/app/services/api/lessons/api"
+import { fetchChapters } from "@/app/services/api/api"
+
 
 export default function LessonsPage() {
   const [lessons, setLessons] = useState<Lesson[]>([])
-
+  const [chapters, setChapters] = useState<Chapter[]>([])
   const [isOpen, setIsOpen] = useState(false)
   const [editingLesson, setEditingLesson] = useState<Lesson | null>(null)
+  useEffect(() => {
+        fetchLessons(setLessons)
+        fetchChapters(setChapters)
+      }, [])
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -46,9 +50,10 @@ export default function LessonsPage() {
           lesson.id === editingLesson.id ? { ...lesson, title, description, chapterId, icon } : lesson,
         ),
       )
+      updateLesson(editingLesson.id,title,description,chapterId,icon)
     } else {
       // Create new lesson
-      setLessons([])
+      createLesson(title,description,chapterId,icon)
     }
 
     setIsOpen(false)
@@ -62,6 +67,7 @@ export default function LessonsPage() {
 
   const handleDelete = (id: number) => {
     setLessons(lessons.filter((lesson) => lesson.id !== id))
+    deleteLesson(id)
   }
 
   return (
@@ -132,7 +138,7 @@ export default function LessonsPage() {
         </Dialog>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {lessons.map((lesson) => (
           <Card key={lesson.id}>
             <CardHeader>
@@ -146,15 +152,25 @@ export default function LessonsPage() {
             </CardHeader>
             <CardContent>
               <p className="mb-4 text-sm text-muted-foreground">{lesson.description}</p>
-              <div className="flex justify-end space-x-2">
-                <Button variant="outline" size="icon" onClick={() => handleEdit(lesson)}>
-                  <Pencil className="h-4 w-4" />
-                </Button>
-                <Button variant="destructive" size="icon" onClick={() => handleDelete(lesson.id)}>
-                  <Trash2 className="h-4 w-4" />
-                </Button>
+              <div className="flex items-center justify-between">
+                <div className="flex space-x-2">
+                  <Button variant="outline" size="icon" onClick={() => handleEdit(lesson)}>
+                    <Pencil className="h-4 w-4" />
+                  </Button>
+                  <Button variant="destructive" size="icon" onClick={() => handleDelete(lesson.id)}>
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
             </CardContent>
+            <CardFooter>
+              <Link href={`/pages/admin/lessons/${lesson.id}/questions`} className="w-full">
+                <Button variant="outline" className="w-full">
+                  <FileQuestion className="mr-2 h-4 w-4" />
+                  Gestionar Preguntas
+                </Button>
+              </Link>
+            </CardFooter>
           </Card>
         ))}
       </div>

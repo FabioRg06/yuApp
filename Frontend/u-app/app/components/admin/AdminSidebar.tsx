@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { BarChart3, BookOpen, GraduationCap, HelpCircle, LayoutDashboard, Settings } from "lucide-react"
+import { BarChart3, BookOpen, GraduationCap,MessageSquare, HelpCircle, LayoutDashboard, Settings } from "lucide-react"
 
 const items = [
   {
@@ -25,6 +25,11 @@ const items = [
     title: "Lecciones",
     href: "/pages/admin/lessons",
     icon: GraduationCap,
+  },
+  {
+    title: "Palabras/Frases",
+    href: "/pages/admin/words",
+    icon: MessageSquare,
   },
   {
     title: "Ayuda",

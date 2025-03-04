@@ -1,11 +1,11 @@
 
 import { API_BASE_URL } from "../api"
 
-export async function fetchLessons(setLessons:any) {
+export async function fetchWords(setWords:any) {
     try {
       const token = localStorage.getItem("accessToken") 
   
-      const response = await fetch(`${API_BASE_URL}/api/lessons`, {
+      const response = await fetch(`${API_BASE_URL}/api/word-phrases`, {
         method: "GET",
         headers: {
           "Authorization": `Bearer ${token}`, 
@@ -18,22 +18,26 @@ export async function fetchLessons(setLessons:any) {
       }
   
       const data = await response.json()
-      setLessons(data)
+      setWords(data)
     } catch (error) {
       console.error("Error fetching lessons:", error)
     }
   }
-export async function updateLesson(id:number,title:string,description:string,chapter:number,icon:string) {
+export async function updateWord(id:number,
+    text_wayuunaiki:string,
+    text_spanish:string,
+    type:string,
+    is_known:boolean) {
     try {
       const token = localStorage.getItem("accessToken") 
-      const response = await fetch(`${API_BASE_URL}/api/lessons/${id}/
+      const response = await fetch(`${API_BASE_URL}/api/word-phrases/${id}/
         `, {
         method: "PUT",
         headers: {
           "Authorization": `Bearer ${token}`, 
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({title,description,chapter,icon})
+        body: JSON.stringify({text_wayuunaiki,text_spanish,type,is_known})
       })
 
       if (!response.ok) {
@@ -45,16 +49,21 @@ export async function updateLesson(id:number,title:string,description:string,cha
     }
   }
 
-  export async function createLesson(title: string, description:string,chapter:number,icon:string) {
+  export async function createWord(
+    text_wayuunaiki:string,
+    text_spanish:string,
+    type:string,
+    is_known:boolean
+  ) {
     const token = localStorage.getItem("accessToken") 
-    const response = await fetch(`${API_BASE_URL}/api/lessons/`, {
+    const response = await fetch(`${API_BASE_URL}/api/word-phrases/`, {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${token}`,
         "Content-Type": "application/json",
         Accept: "application/json",
       },
-      body: JSON.stringify({title,description,chapter,icon}),
+      body: JSON.stringify({text_wayuunaiki,text_spanish,type,is_known}),
     })
   
     if (!response.ok) {
@@ -64,9 +73,9 @@ export async function updateLesson(id:number,title:string,description:string,cha
   
     return response.json()
   }
-  export async function deleteLesson(id:number) {
+  export async function deleteWord(id:number) {
     const token = localStorage.getItem("accessToken") 
-    const response = await fetch(`${API_BASE_URL}/api/lessons/${id}/`, {
+    const response = await fetch(`${API_BASE_URL}/api/word-phrases/${id}/`, {
       method: "DELETE",
       headers: {
         "Authorization": `Bearer ${token}`,
