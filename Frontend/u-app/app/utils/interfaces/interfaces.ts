@@ -14,7 +14,7 @@ export interface WordPhrase {
   text_spanish: string
   type: string
   is_known: boolean
-  tags: string[]
+  tags: string[]|number[]
 }
 
 export interface QuestionOption {

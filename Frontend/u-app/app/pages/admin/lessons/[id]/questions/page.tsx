@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import {
@@ -15,319 +15,315 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { Checkbox } from "@/components/ui/checkbox"
 import { Plus, Pencil, Trash2, ArrowLeft, PlusCircle, X } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import Link from "next/link"
+import { WordPhrase,QuestionOption,QuestionType,Question } from "@/app/utils/interfaces/interfaces"
+import { fetchWords } from "@/app/services/api/words/api"
+import {  createOption, createQuestionWithOptions, deleteQuestion, deleteQuestionOption, fetchQuestionsOfLesson, updateOption, updateQuestion } from "@/app/services/api/questions/api"
+import { text } from "stream/consumers"
 
-interface Option {
-  id: number
-  textWayuunaiki: string
-  textSpanish: string
-  isCorrect: boolean
-}
-
-interface Question {
-  id: number
-  type: "multiple" | "translation" | "matching"
-  text: string
-  options: Option[]
-}
 
 export default function QuestionsPage({ params }: { params: { id: string } }) {
   const lessonId = Number.parseInt(params.id)
-  const [questions, setQuestions] = useState<Question[]>([
-    {
-      id: 1,
-      type: "multiple",
-      text: "¿Cómo se dice 'hola' en Wayuunaiki?",
-      options: [
-        {
-          id: 1,
-          textWayuunaiki: "Jamaya",
-          textSpanish: "Hola",
-          isCorrect: true,
-        },
-        {
-          id: 2,
-          textWayuunaiki: "Anaayawatchi",
-          textSpanish: "Gracias",
-          isCorrect: false,
-        },
-        {
-          id: 3,
-          textWayuunaiki: "Kasaichi",
-          textSpanish: "¿Cómo estás?",
-          isCorrect: false,
-        },
-      ],
-    },
-    {
-      id: 2,
-      type: "translation",
-      text: "Traduce la siguiente palabra",
-      options: [
-        {
-          id: 1,
-          textWayuunaiki: "Anaayawatchi",
-          textSpanish: "Gracias",
-          isCorrect: true,
-        },
-      ],
-    },
-  ])
-
+  const [questions, setQuestions] = useState<Question[]>([])
+  const [wordPhrases, setWordPhrases] = useState<WordPhrase[]>([])
   const [isOpen, setIsOpen] = useState(false)
   const [editingQuestion, setEditingQuestion] = useState<Question | null>(null)
-  const [questionType, setQuestionType] = useState<"multiple" | "translation" | "matching">("multiple")
-  const [options, setOptions] = useState<Option[]>([
-    { id: 1, textWayuunaiki: "", textSpanish: "", isCorrect: false },
-    { id: 2, textWayuunaiki: "", textSpanish: "", isCorrect: false },
-  ])
-  const [correctOptionId, setCorrectOptionId] = useState<number | null>(null)
+  const [questionType, setQuestionType] = useState<string>("multiple selection")
+  const [selectedWordPhrases, setSelectedWordPhrases] = useState<{ word_phrase: number; is_correct: boolean, id:number,question_option:number}[]>([])
+  const [questionText, setQuestionText] = useState("")
+  const [isLoading, setIsLoading] = useState(true)
 
-  const handleAddOption = () => {
-    setOptions([...options, { id: options.length + 1, textWayuunaiki: "", textSpanish: "", isCorrect: false }])
-  }
+  // Simular carga de datos
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true)
 
-  const handleRemoveOption = (id: number) => {
-    if (options.length <= 2) return // Mantener al menos 2 opciones
-    setOptions(options.filter((option) => option.id !== id))
-    if (correctOptionId === id) {
-      setCorrectOptionId(null)
+      // Simular datos de palabras/frases
+      
+
+      // Simular datos de preguntas
+     
+
+      fetchWords(setWordPhrases)
+      fetchQuestionsOfLesson(lessonId,setQuestions)
+      setIsLoading(false)
     }
+
+    fetchData()
+  }, [lessonId])
+
+  const resetForm = () => {
+    setEditingQuestion(null)
+    setQuestionType("multiple selection")
+    setSelectedWordPhrases([])
+    setQuestionText("")
   }
 
-  const handleOptionChange = (id: number, field: keyof Option, value: string | boolean) => {
-    setOptions(options.map((option) => (option.id === id ? { ...option, [field]: value } : option)))
+  const handleEdit = (question: Question) => {
+    setEditingQuestion(question)
+    setQuestionType(question.question_type.name)
+    setQuestionText(question.text)
+    // Mapear las opciones existentes
+    const mappedOptions = question.question_option.map((option) => (
+      
+      {
+      word_phrase: option.word_phrase.id,
+      is_correct: option.is_correct,
+      id:option.id,
+      question_option:option.question_option
+    }))
+
+    setSelectedWordPhrases(mappedOptions)
+    setIsOpen(true)
   }
 
-  const handleCorrectOptionChange = (id: number) => {
-    setCorrectOptionId(id)
-    setOptions(options.map((option) => ({ ...option, isCorrect: option.id === id })))
+  const handleDelete = (id: number) => {
+    deleteQuestion(id)
+    setQuestions(questions.filter((q) => q.id !== id))
   }
 
-  const handleTypeChange = (type: "multiple" | "translation" | "matching") => {
-    setQuestionType(type)
-
-    // Ajustar opciones según el tipo
-    if (type === "translation") {
-      setOptions([{ id: 1, textWayuunaiki: "", textSpanish: "", isCorrect: true }])
-      setCorrectOptionId(1)
-    } else if (type === "multiple" && options.length < 2) {
-      setOptions([
-        { id: 1, textWayuunaiki: "", textSpanish: "", isCorrect: false },
-        { id: 2, textWayuunaiki: "", textSpanish: "", isCorrect: false },
-      ])
-    } else if (type === "matching" && options.length < 3) {
-      setOptions([
-        { id: 1, textWayuunaiki: "", textSpanish: "", isCorrect: true },
-        { id: 2, textWayuunaiki: "", textSpanish: "", isCorrect: true },
-        { id: 3, textWayuunaiki: "", textSpanish: "", isCorrect: true },
-      ])
+  const handleAddWordPhrase = async () => {
+    // Añadir una palabra/frase vacía a la selección
+    const question_option=selectedWordPhrases.length>0?selectedWordPhrases[0].question_option:0
+    let obj:any={}
+    if(question_option){
+       obj= await createOption(question_option,wordPhrases[0].id,false)
     }
+    setSelectedWordPhrases([...selectedWordPhrases, {id:0,word_phrase:0,is_correct:false,question_option:0}])
+    
+ 
   }
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleRemoveWordPhrase = (index: number) => {
+    if(confirm("are you sure?")){
+      const newSelected = [...selectedWordPhrases]
+      if(newSelected[index].id!=0){
+        deleteQuestionOption(newSelected[index].id)
+      }
+      newSelected.splice(index, 1)
+      setSelectedWordPhrases(newSelected)
+    }
+    
+  }
+
+  const handleWordPhraseChange = (index: number, wordPhraseId: number) => {
+    const newSelected = [...selectedWordPhrases]
+    if(newSelected[index].id!=0){
+      const toUpdate=newSelected[index]
+      updateOption(toUpdate.id,toUpdate.question_option,wordPhraseId,toUpdate.is_correct)
+      
+    }
+    newSelected[index].word_phrase = wordPhraseId
+    setSelectedWordPhrases(newSelected)
+  }
+
+  const handleCorrectChange = (index: number, isCorrect: boolean) => {
+    const newSelected = [...selectedWordPhrases]
+    if(newSelected[index].id!=0){
+      const toUpdate=newSelected[index]
+      updateOption(toUpdate.id,toUpdate.question_option,toUpdate.word_phrase,isCorrect)
+      
+    }
+    newSelected[index].is_correct = isCorrect
+    setSelectedWordPhrases(newSelected)
+  }
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const formData = new FormData(e.currentTarget)
-    const text = formData.get("text") as string
 
-    // Validar que haya una opción correcta para multiple choice
-    if (questionType === "multiple" && correctOptionId === null) {
-      alert("Debes seleccionar una opción correcta")
+    // Validar que haya al menos una opción seleccionada
+    if (selectedWordPhrases.length === 0) {
+      alert("Debes seleccionar al menos una palabra/frase")
       return
     }
 
-    // Validar que todas las opciones tengan texto
-    const hasEmptyOptions = options.some((opt) => opt.textWayuunaiki.trim() === "" || opt.textSpanish.trim() === "")
-    if (hasEmptyOptions) {
-      alert("Todas las opciones deben tener texto en ambos idiomas")
+    // Validar que todas las opciones tengan una palabra/frase seleccionada
+    if (selectedWordPhrases.some((item) => item.word_phrase === 0)) {
+      alert("Todas las opciones deben tener una palabra/frase seleccionada")
       return
+    }
+
+    // Validar que haya al menos una opción correcta para multiple y translation
+    if (
+      (questionType === "multiple selection" || questionType === "translation") &&
+      !selectedWordPhrases.some((item) => item.is_correct)
+    ) {
+      alert("Debe haber al menos una opción correcta")
+      return
+    }
+    // Crear las opciones de la pregunta
+    const questionOptions: any[] = selectedWordPhrases.map((selected, index) => {
+      const wordPhrase = wordPhrases.find((wp) => wp.id === selected.word_phrase)!
+      return {
+        word_phrase: wordPhrase,
+        is_correct: selected.is_correct,
+      }
+    })
+
+    // Determinar el tipo de pregunta
+    const questionTypeObj: QuestionType = {
+      id: questionType === "multiple selection" ? 1 : questionType === "matching" ? 2 : 3,
+      name: questionType,
+      description:
+        questionType === "translation"
+          ? "translate the next word/phrase"
+          : questionType === "matching"
+            ? "connect two words"
+            : null,
     }
 
     if (editingQuestion) {
-      setQuestions(
-        questions.map((q) => (q.id === editingQuestion.id ? { ...q, type: questionType, text, options } : q)),
-      )
+      // Actualizar pregunta existente
+      const updatedQuestion: Question = {
+        ...editingQuestion,
+        text: questionText,
+        question_type: questionTypeObj,
+        question_option: questionOptions.map((option, index) => ({
+          ...option,
+          id: editingQuestion.question_option[index]?.id || index + 1,
+          question_option: editingQuestion.id,
+        })),
+      }
+      updateQuestion(editingQuestion.id,lessonId,questionTypeObj.id,questionText)
+      setQuestions(questions.map((q) => (q.id === editingQuestion.id ? updatedQuestion : q)))
+
     } else {
-      setQuestions([
-        ...questions,
-        {
-          id: questions.length + 1,
-          type: questionType,
-          text,
-          options,
-        },
-      ])
+      // Crear nueva pregunta
+      const newId= await createQuestionWithOptions(lessonId,questionTypeObj.id,questionText, questionOptions.map((option, index) => ({
+        ...option,
+      })))
+      const newQuestion: Question = {
+        id: newId,
+        lesson: lessonId,
+        question_type: questionTypeObj,
+        text: questionText,
+        question_option: questionOptions.map((option, index) => ({
+          ...option,
+          id: index + 1,
+          question_option: newId,
+        })),
+      }
+
+      setQuestions([...questions, newQuestion])
     }
 
     setIsOpen(false)
     resetForm()
   }
 
-  const resetForm = () => {
-    setEditingQuestion(null)
-    setQuestionType("multiple")
-    setOptions([
-      { id: 1, textWayuunaiki: "", textSpanish: "", isCorrect: false },
-      { id: 2, textWayuunaiki: "", textSpanish: "", isCorrect: false },
-    ])
-    setCorrectOptionId(null)
+  const getMinOptionsCount = () => {
+    switch (questionType) {
+      case "multiple selection":
+        return 2 // Al menos 2 opciones para selección múltiple
+      case "translation":
+        return 1 // Solo 1 opción para traducción
+      case "matching":
+        return 3 // Al menos 3 pares para emparejamiento
+      default:
+        return 2
+    }
   }
 
-  const handleEdit = (question: Question) => {
-    setEditingQuestion(question)
-    setQuestionType(question.type)
-    setOptions([...question.options])
-    if (question.type === "multiple") {
-      const correctOption = question.options.find((opt) => opt.isCorrect)
-      setCorrectOptionId(correctOption?.id || null)
-    }
-    setIsOpen(true)
-  }
+  const renderWordPhraseSelector = () => {
+    const minOptions = getMinOptionsCount()
 
-  const handleDelete = (id: number) => {
-    setQuestions(questions.filter((q) => q.id !== id))
-  }
-
-  const renderOptionFields = () => {
-    if (questionType === "translation") {
-      return (
-        <div className="space-y-4">
-          <h3 className="text-sm font-medium">Respuesta Correcta</h3>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="wayuunaiki1">Texto en Wayuunaiki</Label>
-              <Input
-                id="wayuunaiki1"
-                value={options[0]?.textWayuunaiki || ""}
-                onChange={(e) => handleOptionChange(1, "textWayuunaiki", e.target.value)}
-                placeholder="Ej: Jamaya"
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="spanish1">Texto en Español</Label>
-              <Input
-                id="spanish1"
-                value={options[0]?.textSpanish || ""}
-                onChange={(e) => handleOptionChange(1, "textSpanish", e.target.value)}
-                placeholder="Ej: Hola"
-                required
-              />
-            </div>
-          </div>
-        </div>
-      )
-    }
-
-    if (questionType === "matching") {
-      return (
-        <div className="space-y-4">
-          <div className="flex justify-between items-center">
-            <h3 className="text-sm font-medium">Pares para Emparejar</h3>
-            <Button type="button" variant="outline" size="sm" onClick={handleAddOption}>
-              <PlusCircle className="h-4 w-4 mr-1" /> Añadir Par
-            </Button>
-          </div>
-          {options.map((option, index) => (
-            <div key={option.id} className="grid grid-cols-2 gap-4 relative border p-4 rounded-md">
-              {options.length > 3 && (
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-destructive text-destructive-foreground"
-                  onClick={() => handleRemoveOption(option.id)}
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              )}
-              <div className="space-y-2">
-                <Label htmlFor={`wayuunaiki${option.id}`}>Texto en Wayuunaiki</Label>
-                <Input
-                  id={`wayuunaiki${option.id}`}
-                  value={option.textWayuunaiki}
-                  onChange={(e) => handleOptionChange(option.id, "textWayuunaiki", e.target.value)}
-                  placeholder={`Palabra/Frase ${index + 1}`}
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor={`spanish${option.id}`}>Texto en Español</Label>
-                <Input
-                  id={`spanish${option.id}`}
-                  value={option.textSpanish}
-                  onChange={(e) => handleOptionChange(option.id, "textSpanish", e.target.value)}
-                  placeholder={`Traducción ${index + 1}`}
-                  required
-                />
-              </div>
-            </div>
-          ))}
-        </div>
-      )
-    }
-
-    // Multiple choice
     return (
       <div className="space-y-4">
         <div className="flex justify-between items-center">
-          <h3 className="text-sm font-medium">Opciones</h3>
-          <Button type="button" variant="outline" size="sm" onClick={handleAddOption}>
-            <PlusCircle className="h-4 w-4 mr-1" /> Añadir Opción
-          </Button>
+          <h3 className="text-sm font-medium">
+            {questionType === "translation"
+              ? "Respuesta Correcta"
+              : questionType === "matching"
+                ? "Pares para Emparejar"
+                : "Opciones"}
+          </h3>
+          {questionType !== "translation" && (
+            <Button type="button" variant="outline" size="sm" onClick={handleAddWordPhrase}>
+              <PlusCircle className="h-4 w-4 mr-1" />
+              Añadir {questionType === "matching" ? "Par" : "Opción"}
+            </Button>
+          )}
         </div>
-        <RadioGroup
-          value={correctOptionId?.toString()}
-          onValueChange={(value) => handleCorrectOptionChange(Number.parseInt(value))}
-        >
-          {options.map((option, index) => (
-            <div key={option.id} className="grid grid-cols-1 gap-4 relative border p-4 rounded-md mb-4">
-              {options.length > 2 && (
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-destructive text-destructive-foreground"
-                  onClick={() => handleRemoveOption(option.id)}
-                >
-                  <X className="h-4 w-4" />
-                </Button>
+
+        {selectedWordPhrases.map((selected, index) => (
+          <div key={`word-${index}`} className="border p-4 rounded-md relative">
+            {selectedWordPhrases.length > minOptions && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-destructive text-destructive-foreground"
+                onClick={() => handleRemoveWordPhrase(index)}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            )}
+
+            <div className="grid grid-cols-1 gap-4">
+              {questionType !== "translation" && (
+                <div className="flex items-center space-x-2 mb-2">
+                  <Checkbox
+                    id={`correct-${index}`}
+                    checked={selected.is_correct}
+                    onCheckedChange={(checked) => handleCorrectChange(index, checked === true)}
+                  />
+                  <Label htmlFor={`correct-${index}`}>
+                    {questionType === "multiple selection" ? "Opción correcta" : "Par correcto"}
+                  </Label>
+                </div>
               )}
-              <div className="flex items-center space-x-2 mb-2">
-                <RadioGroupItem value={option.id.toString()} id={`correct-${option.id}`} />
-                <Label htmlFor={`correct-${option.id}`}>Opción correcta</Label>
+
+              <div className="space-y-2">
+                <Label htmlFor={`wordphrase-${index}`}>Palabra/Frase</Label>
+                <Select
+                  value={selected.word_phrase.toString()}
+                  onValueChange={(value) => handleWordPhraseChange(index, Number.parseInt(value))}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecciona una palabra/frase" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="0">Selecciona una palabra/frase</SelectItem>
+                    {wordPhrases.map((wp) => (
+                      <SelectItem key={wp.id} value={wp.id.toString()}>
+                        {wp.text_wayuunaiki} - {wp.text_spanish}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor={`wayuunaiki${option.id}`}>Texto en Wayuunaiki</Label>
-                  <Input
-                    id={`wayuunaiki${option.id}`}
-                    value={option.textWayuunaiki}
-                    onChange={(e) => handleOptionChange(option.id, "textWayuunaiki", e.target.value)}
-                    placeholder={`Opción ${index + 1} en Wayuunaiki`}
-                    required
-                  />
+
+              {selected.word_phrase > 0 && (
+                <div className="bg-muted p-2 rounded-md">
+                  <p className="font-medium">{wordPhrases.find((wp) => wp.id === selected.word_phrase)?.text_wayuunaiki}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {wordPhrases.find((wp) => wp.id === selected.word_phrase)?.text_spanish}
+                  </p>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor={`spanish${option.id}`}>Texto en Español</Label>
-                  <Input
-                    id={`spanish${option.id}`}
-                    value={option.textSpanish}
-                    onChange={(e) => handleOptionChange(option.id, "textSpanish", e.target.value)}
-                    placeholder={`Opción ${index + 1} en Español`}
-                    required
-                  />
-                </div>
-              </div>
+              )}
             </div>
-          ))}
-        </RadioGroup>
+          </div>
+        ))}
+
+        {selectedWordPhrases.length === 0 && (
+          <Button type="button" variant="outline" className="w-full" onClick={handleAddWordPhrase}>
+            <PlusCircle className="h-4 w-4 mr-2" />
+            Añadir {questionType === "translation" ? "Respuesta" : questionType === "matching" ? "Par" : "Opción"}
+          </Button>
+        )}
+      </div>
+    )
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-[calc(100vh-4rem)]">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-wayuu-red"></div>
       </div>
     )
   }
@@ -365,12 +361,32 @@ export default function QuestionsPage({ params }: { params: { id: string } }) {
               <div className="space-y-4 py-4">
                 <div className="space-y-2">
                   <Label htmlFor="type">Tipo de Pregunta</Label>
-                  <Select value={questionType} onValueChange={(value) => handleTypeChange(value as any)}>
+                  <Select
+                    value={questionType}
+                    onValueChange={(value) => {
+                      setQuestionType(value)
+                      // Reiniciar las opciones seleccionadas
+                      if (value === "translation") {
+                        setSelectedWordPhrases([{ id: 0, is_correct: true,word_phrase:0,question_option:0}])
+                      } else if (value === "matching" && selectedWordPhrases.length < 3) {
+                        setSelectedWordPhrases([
+                          { id: 0, is_correct: true,word_phrase:0,question_option:0},
+                          { id: 0, is_correct: true,word_phrase:0,question_option:0},
+                          { id: 0, is_correct: true,word_phrase:0,question_option:0},
+                        ])
+                      } else if (value === "multiple selection" && selectedWordPhrases.length < 2) {
+                        setSelectedWordPhrases([
+                          { id: 0, is_correct: false,word_phrase:0,question_option:0},
+                          { id: 0, is_correct: false,word_phrase:0,question_option:0},
+                        ])
+                      }
+                    }}
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Selecciona el tipo" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="multiple">Selección Múltiple</SelectItem>
+                      <SelectItem value="multiple selection">Selección Múltiple</SelectItem>
                       <SelectItem value="translation">Traducción</SelectItem>
                       <SelectItem value="matching">Emparejamiento</SelectItem>
                     </SelectContent>
@@ -380,8 +396,8 @@ export default function QuestionsPage({ params }: { params: { id: string } }) {
                   <Label htmlFor="text">Texto de la Pregunta</Label>
                   <Textarea
                     id="text"
-                    name="text"
-                    defaultValue={editingQuestion?.text}
+                    value={questionText}
+                    onChange={(e) => setQuestionText(e.target.value)}
                     placeholder="Ej: ¿Cómo se dice 'hola' en Wayuunaiki?"
                     required
                   />
@@ -392,12 +408,34 @@ export default function QuestionsPage({ params }: { params: { id: string } }) {
                     <TabsTrigger value="preview">Vista Previa</TabsTrigger>
                   </TabsList>
                   <TabsContent value="options" className="space-y-4">
-                    {renderOptionFields()}
+                    {renderWordPhraseSelector()}
                   </TabsContent>
                   <TabsContent value="preview">
                     <Card>
                       <CardContent className="pt-6">
                         <p className="text-muted-foreground">Vista previa de la pregunta...</p>
+                        <div className="mt-4">
+                          <h3 className="font-medium">{questionText}</h3>
+                          <div className="mt-2 space-y-2">
+                            {selectedWordPhrases.map((selected, index) => {
+                              const wordPhrase = wordPhrases.find((wp) => wp.id === selected.word_phrase)
+                              if (!wordPhrase) return null
+
+                              return (
+                                <div key={index} className="flex items-center space-x-2">
+                                  {questionType === "multiple selection" && (
+                                    <div
+                                      className={`w-4 h-4 rounded-full ${selected.is_correct ? "bg-green-500" : "bg-gray-300"}`}
+                                    ></div>
+                                  )}
+                                  <span>
+                                    {wordPhrase.text_wayuunaiki} - {wordPhrase.text_spanish}
+                                  </span>
+                                </div>
+                              )
+                            })}
+                          </div>
+                        </div>
                       </CardContent>
                     </Card>
                   </TabsContent>
@@ -420,9 +458,9 @@ export default function QuestionsPage({ params }: { params: { id: string } }) {
               <CardTitle>{question.text}</CardTitle>
               <CardDescription>
                 Tipo:{" "}
-                {question.type === "multiple"
+                {question.question_type.name === "multiple selection"
                   ? "Selección Múltiple"
-                  : question.type === "translation"
+                  : question.question_type.name === "translation"
                     ? "Traducción"
                     : "Emparejamiento"}
               </CardDescription>
@@ -430,13 +468,13 @@ export default function QuestionsPage({ params }: { params: { id: string } }) {
             <CardContent>
               <div className="space-y-4">
                 <div className="grid gap-2">
-                  {question.options.map((option) => (
+                  {question.question_option.map((option) => (
                     <div key={option.id} className="flex justify-between items-center p-2 bg-muted rounded-lg">
                       <div>
-                        <p className="font-medium">{option.textWayuunaiki}</p>
-                        <p className="text-sm text-muted-foreground">{option.textSpanish}</p>
+                        <p className="font-medium">{option.word_phrase.text_wayuunaiki}</p>
+                        <p className="text-sm text-muted-foreground">{option.word_phrase.text_spanish}</p>
                       </div>
-                      {option.isCorrect && question.type === "multiple" && (
+                      {option.is_correct && question.question_type.name === "multiple selection" && (
                         <span className="text-green-500 text-sm">Correcta</span>
                       )}
                     </div>
