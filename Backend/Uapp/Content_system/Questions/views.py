@@ -16,7 +16,7 @@ class QuestionTypeListCreateView(generics.ListCreateAPIView):
         question_type = QuestionTypeService.create_question_type(serializer_class.validated_data)
         return Response(QuestionTypeSerializer(question_type).data, status=status.HTTP_201_CREATED)
 
-class QuestionTypeDetailView(generics.RetrieveDestroyAPIView):
+class QuestionTypeDetailView(generics.RetrieveUpdateDestroyAPIView):
     """Maneja la obtención y eliminación de un tipo de pregunta."""
     permission_classes = [IsAuthenticated]
     serializer_class = QuestionTypeSerializer
@@ -41,7 +41,7 @@ class QuestionListCreateView(generics.ListCreateAPIView):
         serializer_class.instance=question
         return Response(QuestionSerializer(question).data, status=status.HTTP_201_CREATED)
 
-class QuestionDetailView(generics.RetrieveDestroyAPIView):
+class QuestionDetailView(generics.RetrieveUpdateDestroyAPIView):
     """Obtiene y elimina una pregunta."""
     permission_classes = [IsAuthenticated]
     serializer_class = QuestionSerializer
@@ -49,9 +49,6 @@ class QuestionDetailView(generics.RetrieveDestroyAPIView):
     def get_object(self):
         return QuestionService.get_question_by_id(self.kwargs.get("pk"))
 
-    def delete(self, request, *args, **kwargs):
-        QuestionService.delete_question(self.kwargs.get("pk"))
-        return Response(status=status.HTTP_204_NO_CONTENT)
 class QuestionOptionListCreateView(generics.ListCreateAPIView):
     """Lista y crea opciones de respuesta para preguntas."""
     permission_classes = [IsAuthenticated]
@@ -65,7 +62,7 @@ class QuestionOptionListCreateView(generics.ListCreateAPIView):
         serializer.instance=question_option
         return Response( status=status.HTTP_201_CREATED)
 
-class QuestionOptionDetailView(generics.RetrieveDestroyAPIView):
+class QuestionOptionDetailView(generics.RetrieveUpdateDestroyAPIView):
     """Obtiene y elimina una opción de respuesta."""
     permission_classes = [IsAuthenticated]
     serializer_class = QuestionOptionSerializer
@@ -73,6 +70,3 @@ class QuestionOptionDetailView(generics.RetrieveDestroyAPIView):
     def get_object(self):
         return QuestionOptionService.get_option_by_id(self.kwargs.get("pk"))
 
-    def delete(self, request, *args, **kwargs):
-        QuestionOptionService.delete_option(self.kwargs.get("pk"))
-        return Response(status=status.HTTP_204_NO_CONTENT)

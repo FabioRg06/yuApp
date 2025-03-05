@@ -28,12 +28,6 @@ class LessonDetailView(generics.RetrieveUpdateDestroyAPIView):
     def get_object(self):
         return LessonService.get_lesson_by_id(self.kwargs.get("pk"))
 
-    def put(self, request, *args, **kwargs):
-        lesson = self.get_object()
-        updated_lesson = LessonService.update_lesson(lesson.id, request.data)
-        if updated_lesson:
-            return Response(LessonSerializer(updated_lesson).data)
-        return Response({"error": "Lección no encontrada"}, status=status.HTTP_404_NOT_FOUND)
 
     def delete(self, request, *args, **kwargs):
         lesson = self.get_object()
