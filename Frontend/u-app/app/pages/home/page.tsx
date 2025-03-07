@@ -15,6 +15,7 @@ function Home() {
   const {handleLogout}= useAuth()
   useEffect(() => {
     fetchChapters(setChapters)
+
   }, [])
 
   

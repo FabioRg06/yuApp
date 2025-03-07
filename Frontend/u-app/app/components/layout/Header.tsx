@@ -5,12 +5,11 @@ import ProgressStats from "./ProgressStats"
 
 interface HeaderProps {
   theme: string
-  isScrolled:boolean
   toggleTheme: () => void
   handleLogout: () => void
 }
 
-export default function Header({ theme, toggleTheme, handleLogout,isScrolled }: HeaderProps) {
+export default function Header({ theme, toggleTheme, handleLogout }: HeaderProps) {
   return (
       <div className="sticky top-0 z-50">
         <header className="bg-white dark:bg-wayuu-dark-card shadow-md">
@@ -48,7 +47,7 @@ export default function Header({ theme, toggleTheme, handleLogout,isScrolled }: 
         </header>
 
         <div
-          className={`bg-white dark:bg-wayuu-dark-card border-t border-wayuu-teal/20 dark:border-wayuu-red/20 py-2 shadow-sm transition-all duration-300 ${isScrolled ? "shadow-md" : ""}`}>
+          className={`bg-white dark:bg-wayuu-dark-card border-t border-wayuu-teal/20 dark:border-wayuu-red/20 py-2 shadow-sm transition-all duration-300 `}>
           <div className="container mx-auto px-4 flex justify-center">
             <ProgressStats hearts={5} points={120} streak={3} />
           </div>
