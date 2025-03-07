@@ -21,9 +21,10 @@ import { Plus, Pencil, Trash2 } from "lucide-react"
 import { Chapter } from "@/app/utils/interfaces/interfaces"
 import { fetchChapters } from "@/app/services/api/api"
 import { createChapter, deleteChapter, updateChapter } from "@/app/services/api/chapters/api"
+import { withAuth } from "@/app/utils/withAuth"
 
 
-export default function ChaptersPage() {
+function ChaptersPage() {
   const [chapters, setChapters] = useState<Chapter[]>([])
 
   const [isOpen, setIsOpen] = useState(false)
@@ -137,3 +138,4 @@ export default function ChaptersPage() {
   )
 }
 
+export default withAuth(ChaptersPage)

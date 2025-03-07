@@ -1,5 +1,4 @@
 "use client"
-
 import type React from "react"
 
 import { useEffect, useState } from "react"
@@ -23,9 +22,10 @@ import Link from "next/link"
 import { Chapter, Lesson } from "@/app/utils/interfaces/interfaces"
 import { createLesson, deleteLesson, fetchLessons, updateLesson } from "@/app/services/api/lessons/api"
 import { fetchChapters } from "@/app/services/api/api"
+import { withAuth } from "@/app/utils/withAuth"
 
 
-export default function LessonsPage() {
+function LessonsPage() {
   const [lessons, setLessons] = useState<Lesson[]>([])
   const [chapters, setChapters] = useState<Chapter[]>([])
   const [isOpen, setIsOpen] = useState(false)
@@ -178,3 +178,4 @@ export default function LessonsPage() {
   )
 }
 
+export default withAuth(LessonsPage)

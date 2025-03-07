@@ -25,9 +25,10 @@ import { WordPhrase,QuestionOption,QuestionType,Question } from "@/app/utils/int
 import { fetchWords } from "@/app/services/api/words/api"
 import {  createOption, createQuestionWithOptions, deleteQuestion, deleteQuestionOption, fetchQuestionsOfLesson, updateOption, updateQuestion } from "@/app/services/api/questions/api"
 import { text } from "stream/consumers"
+import { withAuth } from "@/app/utils/withAuth"
 
 
-export default function QuestionsPage({ params }: { params: { id: string } }) {
+function QuestionsPage({ params }: { params: { id: string } }) {
   const lessonId = Number.parseInt(params.id)
   const [questions, setQuestions] = useState<Question[]>([])
   const [wordPhrases, setWordPhrases] = useState<WordPhrase[]>([])
@@ -497,3 +498,4 @@ export default function QuestionsPage({ params }: { params: { id: string } }) {
   )
 }
 
+export default withAuth(QuestionsPage)

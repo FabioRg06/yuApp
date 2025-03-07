@@ -1,9 +1,11 @@
+"use client"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { BookOpen, GraduationCap, Users, MessageSquare } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import { withAuth } from "@/app/utils/withAuth"
 
-export default function AdminDashboard() {
+function AdminDashboard() {
   return (
     <div className="space-y-6">
       <h1 className="text-3xl font-bold text-wayuu-red">Panel de Administración</h1>
@@ -141,3 +143,4 @@ export default function AdminDashboard() {
   )
 }
 
+export default withAuth(AdminDashboard)

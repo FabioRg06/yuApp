@@ -1,7 +1,8 @@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import ChapterCard from "./ChapterCard"
-import LessonCard from "./LessonCard"
 import { Chapter } from "@/app/utils/interfaces/interfaces"
+import { BookOpen } from "lucide-react"
+import LessonPath from "./LessonPath"
 
 interface ChapterListProps {
   chapters: Chapter[]
@@ -9,29 +10,26 @@ interface ChapterListProps {
 
 export default function ChapterList({ chapters }: ChapterListProps) {
   return (
-    <Accordion type="single" collapsible className="space-y-4">
-      {chapters.map((chapter) => (
-        <AccordionItem key={chapter.id} value={`chapter-${chapter.id}`}>
-          <AccordionTrigger className="bg-white dark:bg-wayuu-dark-card p-4 rounded-t-xl">
-            <ChapterCard title={chapter.title} description={chapter.description} progress={chapter.progress} />
-          </AccordionTrigger>
-          <AccordionContent className="bg-white/90 dark:bg-wayuu-dark-card/90 p-4 rounded-b-xl">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {chapter.lessons.map((lesson) => (
-                <LessonCard
-                  key={`lesson-${lesson.id}`}
-                  title={lesson.title}
-                  description={lesson.description}
-                  progress={lesson.progress}
-                  href={`/pages/lesson/${lesson.id}`}
-                  icon={lesson.icon}
-                  completed={lesson.completed}
-                />
-              ))}
-            </div>
-          </AccordionContent>
-        </AccordionItem>
-      ))}
-    </Accordion>
+    <div className="flex flex-col gap-12">
+    {chapters.map((chapter, index) => (
+      <div key={chapter.id} className="mb-8">
+        {/* Fondo decorativo para cada capítulo */}
+        <div className="relative bg-gradient-to-r from-wayuu-teal/10 to-wayuu-blue/10 dark:from-wayuu-red/10 dark:to-wayuu-navy/20 rounded-xl p-4 sm:p-6 shadow-sm">
+          <div className="absolute top-4 right-4 opacity-10 hidden sm:block">
+            <BookOpen className="h-16 w-16 text-wayuu-red dark:text-wayuu-red" />
+          </div>
+
+          <ChapterCard 
+            title={chapter.title} 
+            description={chapter.description} 
+            progress={chapter.progress}/>
+
+          <div className="p-2">
+            <LessonPath lessons={chapter.lessons} />
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
   )
 }
