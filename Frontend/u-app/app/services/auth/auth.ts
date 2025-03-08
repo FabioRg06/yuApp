@@ -53,10 +53,12 @@ export async function register(username: string, email: string, password: string
       },
       body: JSON.stringify({ username, email, password }),
     })
-  
     if (!response.ok) {
+      
       const errorData = await response.json()
-      throw new Error(errorData.message || "Error en el registro")
+      for(let error in errorData.errors){
+        throw new Error(errorData.errors[error])
+      }
     }
   
     return response.json()

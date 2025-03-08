@@ -21,15 +21,15 @@ export default function RegisterForm() {
     <form onSubmit={onSubmit}>
       <div className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="name">Nombre</Label>
+          <Label htmlFor="name">Username</Label>
           <Input id="name" name="name" type="text" required />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="email">Correo electrónico</Label>
+          <Label htmlFor="email">Email</Label>
           <Input id="email" name="email" type="email" required />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="password">Contraseña</Label>
+          <Label htmlFor="password">Password</Label>
           <Input id="password" name="password" type="password" required />
         </div>
         <Button type="submit" className="w-full bg-wayuu-red text-white" disabled={isLoading}>

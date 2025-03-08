@@ -17,11 +17,11 @@ export default function LoginForm() {
     <form onSubmit={onSubmit}>
       <div className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="email">Correo electrónico</Label>
+          <Label htmlFor="email">Email</Label>
           <Input id="email" name="email" type="email" placeholder="tu@email.com" required />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="password">Contraseña</Label>
+          <Label htmlFor="password">Password</Label>
           <Input id="password" name="password" type="password" required />
         </div>
         <Button type="submit" className="w-full bg-wayuu-red text-white" disabled={isLoading}>

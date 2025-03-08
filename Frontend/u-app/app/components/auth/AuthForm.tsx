@@ -9,8 +9,8 @@ export default function AuthForm() {
   return (
     <Tabs value={activeTab} onValueChange={setActiveTab}>
       <TabsList className="grid w-full grid-cols-2">
-        <TabsTrigger value="login">Iniciar sesión</TabsTrigger>
-        <TabsTrigger value="register">Registrarse</TabsTrigger>
+        <TabsTrigger value="login">Log In</TabsTrigger>
+        <TabsTrigger value="register">Sign Up</TabsTrigger>
       </TabsList>
       <TabsContent value="login">
         <LoginForm />
