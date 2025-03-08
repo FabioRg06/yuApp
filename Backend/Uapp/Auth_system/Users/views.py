@@ -31,9 +31,9 @@ class LoginView(generics.GenericAPIView):
     def post(self, request):
         email = request.data.get('email')
         password = request.data.get('password')
-        tokens = UserService.authenticate_user(email, password)
-        if tokens:
-            return Response(tokens, status=status.HTTP_200_OK)
+        credentials = UserService.authenticate_user(email, password)
+        if credentials:
+            return credentials
         return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
 class UserProgressList(generics.ListCreateAPIView):
