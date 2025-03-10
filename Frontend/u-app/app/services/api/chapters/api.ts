@@ -3,13 +3,12 @@ import { API_BASE_URL } from "../api"
 
 export async function updateChapter(id:number,title:string,description:string) {
     try {
-      const token = localStorage.getItem("accessToken") 
       const response = await fetch(`${API_BASE_URL}/api/chapters/${id}`, {
         method: "PUT",
         headers: {
-          "Authorization": `Bearer ${token}`, 
           "Content-Type": "application/json",
         },
+        credentials:'include',
         body: JSON.stringify({title,description})
       })
 
@@ -27,7 +26,6 @@ export async function updateChapter(id:number,title:string,description:string) {
     const response = await fetch(`${API_BASE_URL}/api/chapters/`, {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${token}`,
         "Content-Type": "application/json",
         Accept: "application/json",
       },
@@ -41,15 +39,14 @@ export async function updateChapter(id:number,title:string,description:string) {
   
     return response.json()
   }
-  export async function deleteChapter(id:number) {
-    const token = localStorage.getItem("accessToken") 
+  export async function deleteChapter(id:number) { 
     const response = await fetch(`${API_BASE_URL}/api/chapters/${id}`, {
       method: "DELETE",
       headers: {
-        "Authorization": `Bearer ${token}`,
         "Content-Type": "application/json",
         Accept: "application/json",
-      }
+      },
+      credentials:'include'
     })
   
     if (!response.ok) {

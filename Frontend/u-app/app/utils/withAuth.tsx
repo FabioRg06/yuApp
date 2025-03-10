@@ -8,18 +8,12 @@ export function withAuth<T extends object>(Component: React.FC<T>) {
 
     useEffect(() => {
       const checkAuth = async () => {
-        let accessToken = localStorage.getItem("accessToken");
-        const refreshToken = localStorage.getItem("refreshToken");
 
-        if (!accessToken) {
-          router.push("/");
-          return;
-        }
 
-        const isValid = await validateToken(accessToken);
-        if (!isValid && refreshToken) {
+        const isValid = await validateToken();
+        if (!isValid ) {
           try {
-            accessToken = await refreshAccessToken(refreshToken);
+            await refreshAccessToken();
           } catch (error) {
             console.error("No se pudo renovar el token", error);
             router.push("/");

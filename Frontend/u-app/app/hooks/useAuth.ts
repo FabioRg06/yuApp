@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import { login,register,validateToken } from "../services/auth/auth";
+import { login,register,validateToken,logout } from "../services/auth/auth";
 
 export function useAuth() {
   const [isLoading, setIsLoading] = useState(false);
@@ -12,8 +12,6 @@ export function useAuth() {
     try {
       const data = await login(email, password);
       toast.success("Inicio de sesión exitoso");
-      localStorage.setItem("accessToken", data.access);
-      localStorage.setItem("refreshToken", data.refresh);
       router.push("/pages/home");
     } catch (error) {
       toast.error("Error: " + (error instanceof Error ? error.message : "Desconocido"));
@@ -33,26 +31,19 @@ export function useAuth() {
       setIsLoading(false);
     }
   };
-  const handleLogout = () => {
-    localStorage.removeItem('accessToken')
-    localStorage.removeItem('refreshToken')
+  const handleLogout = async () => {
+    await logout()
     router.push("/")
   }
   const checkToken = async () => {
-    const token = localStorage.getItem("accessToken")
-    if (token) {
       try {
-        const isValid = await validateToken(token)
+        const isValid = await validateToken()
         if (isValid) {
-          toast.success("Sesión activa, redirigiendo al inicio.")
           router.push("/pages/home")
         }
       } catch (error) {
         console.log("Token inválido o expirado:", error)
-        localStorage.removeItem("accessToken")
-        localStorage.removeItem("refreshToken")
       }
-    }
   }
 
   return { handleLogin, handleRegister,checkToken, isLoading, handleLogout};

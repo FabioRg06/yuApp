@@ -1,13 +1,13 @@
 import { API_BASE_URL } from "../api/api";
 
-export async function validateToken(accessToken: string): Promise<boolean> {
+export async function validateToken(): Promise<boolean> {
     try {
       const response = await fetch(`${API_BASE_URL}/api/token/validate-token/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
         },
+        credentials: "include"
       });
   
       return response.ok; // Devuelve true si el token es válido
@@ -17,27 +17,18 @@ export async function validateToken(accessToken: string): Promise<boolean> {
     }
   }
 
-export async function refreshAccessToken(refreshToken: string): Promise<string> {
+export async function refreshAccessToken(): Promise<void> {
     try {
       const response = await fetch(`${API_BASE_URL}/api/token/refresh/`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ refresh: refreshToken }),
+        credentials: "include", 
       });
-  
+
       if (!response.ok) {
         throw new Error("No se pudo renovar el token");
       }
-  
-      const data = await response.json();
-      const newAccessToken = data.access;
-  
-      // Guarda el nuevo token de acceso en localStorage
-      localStorage.setItem("accessToken", newAccessToken);
-  
-      return newAccessToken;
+
+      
     } catch (error) {
       console.error("Error al renovar el token de acceso", error);
       throw error;
@@ -71,6 +62,7 @@ export async function login(email: string, password: string) {
         "Content-Type": "application/json",
         Accept: "application/json",
       },
+      credentials: "include",
       body: JSON.stringify({ email, password }),
     })
   
@@ -81,3 +73,18 @@ export async function login(email: string, password: string) {
   
     return response.json()
   }
+  export async function logout(): Promise<void> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/token/logout/`, {
+        method: "POST",
+        credentials: "include", // Mandar cookies
+      });
+  
+      if (!response.ok) {
+        throw new Error("Error al cerrar sesión");
+      }
+    } catch (error) {
+      console.error("Logout falló", error);
+    }
+  }
+  

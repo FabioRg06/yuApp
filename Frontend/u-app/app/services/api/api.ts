@@ -1,15 +1,14 @@
-export const API_BASE_URL = "http://localhost:8000"
+export const API_BASE_URL = "http://127.0.0.1:8000"
 
 export async function fetchChapters(setChapters:any) {
   try {
-    const token = localStorage.getItem("accessToken") 
 
     const response = await fetch(`${API_BASE_URL}/api/chapters`, {
       method: "GET",
-      headers: {
-        "Authorization": `Bearer ${token}`, 
+      headers: { 
         "Content-Type": "application/json",
       },
+      credentials: "include"
     })
 
     if (!response.ok) {
@@ -23,14 +22,13 @@ export async function fetchChapters(setChapters:any) {
   }
 }
 export async function fetchLessons(setLesson:any,id:string) {
-  try {
-    const token = localStorage.getItem("accessToken") 
+  try { 
     const response = await fetch(`${API_BASE_URL}/api/lessons/${id}`, {
       method: "GET",
-      headers: {
-        "Authorization": `Bearer ${token}`, 
+      headers: { 
         "Content-Type": "application/json",
       },
+      credentials: "include"
     })
 
     if (!response.ok) {
@@ -44,14 +42,13 @@ export async function fetchLessons(setLesson:any,id:string) {
   }
 }
 export async function updateProgress(id:string,progress:number) {
-    try {
-      const token = localStorage.getItem("accessToken") 
+    try { 
       const response = await fetch(`${API_BASE_URL}/api/lessons/${id}/update-progress/`, {
         method: "PUT",
-        headers: {
-          "Authorization": `Bearer ${token}`, 
+        headers: { 
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify({progress})
       })
 

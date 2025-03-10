@@ -3,14 +3,13 @@ import { API_BASE_URL } from "../api"
 
 export async function fetchWords(setWords:any) {
     try {
-      const token = localStorage.getItem("accessToken") 
   
       const response = await fetch(`${API_BASE_URL}/api/word-phrases`, {
         method: "GET",
-        headers: {
-          "Authorization": `Bearer ${token}`, 
+        headers: { 
           "Content-Type": "application/json",
         },
+        credentials:'include'
       })
   
       if (!response.ok) {
@@ -28,15 +27,14 @@ export async function updateWord(id:number,
     text_spanish:string,
     type:string,
     is_known:boolean) {
-    try {
-      const token = localStorage.getItem("accessToken") 
+    try { 
       const response = await fetch(`${API_BASE_URL}/api/word-phrases/${id}/
         `, {
         method: "PUT",
-        headers: {
-          "Authorization": `Bearer ${token}`, 
+        headers: { 
           "Content-Type": "application/json",
         },
+        credentials:'include',
         body: JSON.stringify({text_wayuunaiki,text_spanish,type,is_known})
       })
 
@@ -55,14 +53,13 @@ export async function updateWord(id:number,
     type:string,
     is_known:boolean
   ) {
-    const token = localStorage.getItem("accessToken") 
     const response = await fetch(`${API_BASE_URL}/api/word-phrases/`, {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${token}`,
         "Content-Type": "application/json",
         Accept: "application/json",
       },
+      credentials:'include',
       body: JSON.stringify({text_wayuunaiki,text_spanish,type,is_known}),
     })
   
@@ -73,15 +70,14 @@ export async function updateWord(id:number,
   
     return response.json()
   }
-  export async function deleteWord(id:number) {
-    const token = localStorage.getItem("accessToken") 
+  export async function deleteWord(id:number) { 
     const response = await fetch(`${API_BASE_URL}/api/word-phrases/${id}/`, {
       method: "DELETE",
       headers: {
-        "Authorization": `Bearer ${token}`,
         "Content-Type": "application/json",
         Accept: "application/json",
-      }
+      },
+      credentials:'include'
     })
   
     if (!response.ok) {

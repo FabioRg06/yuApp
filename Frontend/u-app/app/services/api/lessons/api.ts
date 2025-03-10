@@ -3,14 +3,13 @@ import { API_BASE_URL } from "../api"
 
 export async function fetchLessons(setLessons:any) {
     try {
-      const token = localStorage.getItem("accessToken") 
   
       const response = await fetch(`${API_BASE_URL}/api/lessons`, {
         method: "GET",
         headers: {
-          "Authorization": `Bearer ${token}`, 
           "Content-Type": "application/json",
         },
+        credentials:'include'
       })
   
       if (!response.ok) {
@@ -24,15 +23,14 @@ export async function fetchLessons(setLessons:any) {
     }
   }
 export async function updateLesson(id:number,title:string,description:string,chapter:number,icon:string) {
-    try {
-      const token = localStorage.getItem("accessToken") 
+    try { 
       const response = await fetch(`${API_BASE_URL}/api/lessons/${id}/
         `, {
         method: "PUT",
-        headers: {
-          "Authorization": `Bearer ${token}`, 
+        headers: { 
           "Content-Type": "application/json",
         },
+        credentials:'include',
         body: JSON.stringify({title,description,chapter,icon})
       })
 
@@ -45,15 +43,14 @@ export async function updateLesson(id:number,title:string,description:string,cha
     }
   }
 
-  export async function createLesson(title: string, description:string,chapter:number,icon:string) {
-    const token = localStorage.getItem("accessToken") 
+  export async function createLesson(title: string, description:string,chapter:number,icon:string) { 
     const response = await fetch(`${API_BASE_URL}/api/lessons/`, {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${token}`,
         "Content-Type": "application/json",
         Accept: "application/json",
       },
+      credentials:'include',
       body: JSON.stringify({title,description,chapter,icon}),
     })
   
@@ -65,14 +62,13 @@ export async function updateLesson(id:number,title:string,description:string,cha
     return response.json()
   }
   export async function deleteLesson(id:number) {
-    const token = localStorage.getItem("accessToken") 
     const response = await fetch(`${API_BASE_URL}/api/lessons/${id}/`, {
       method: "DELETE",
       headers: {
-        "Authorization": `Bearer ${token}`,
         "Content-Type": "application/json",
         Accept: "application/json",
-      }
+      },
+      credentials:'include'
     })
   
     if (!response.ok) {

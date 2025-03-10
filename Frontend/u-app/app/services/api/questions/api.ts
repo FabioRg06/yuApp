@@ -4,14 +4,13 @@ import { API_BASE_URL } from "../api"
 
 export async function fetchQuestionsOfLesson(id:number,setQuestions:any) {
     try {
-      const token = localStorage.getItem("accessToken") 
   
       const response = await fetch(`${API_BASE_URL}/api/lessons/${id}`, {
         method: "GET",
-        headers: {
-          "Authorization": `Bearer ${token}`, 
+        headers: { 
           "Content-Type": "application/json",
         },
+        credentials:'include'
       })
   
       if (!response.ok) {
@@ -28,15 +27,14 @@ export async function fetchQuestionsOfLesson(id:number,setQuestions:any) {
     if(id==0){
         return
     }
-    try {
-        const token = localStorage.getItem("accessToken") 
+    try { 
         const response = await fetch(`${API_BASE_URL}/api/questions/options/${id}/`, {
         method: "DELETE",
         headers: {
-            "Authorization": `Bearer ${token}`,
             "Content-Type": "application/json",
             Accept: "application/json",
-        }
+        },
+        credentials:'include'
         })
     
         if (!response.ok) {
@@ -51,15 +49,14 @@ export async function fetchQuestionsOfLesson(id:number,setQuestions:any) {
   export async function updateOption(id:number,question_option: number,
     word_phrase: number,
     is_correct: boolean) {
-    try {
-      const token = localStorage.getItem("accessToken") 
+    try { 
       const response = await fetch(`${API_BASE_URL}/api/questions/options/${id}/
         `, {
         method: "PUT",
-        headers: {
-          "Authorization": `Bearer ${token}`, 
+        headers: { 
           "Content-Type": "application/json",
         },
+        credentials:'include',
         body: JSON.stringify({question_option,word_phrase,is_correct})
       })
 
@@ -71,15 +68,14 @@ export async function fetchQuestionsOfLesson(id:number,setQuestions:any) {
       console.error("Error updating progress:", error)
     }
   }
-  export async function createOption(question_option: number, word_phrase:number,is_correct:boolean) {
-    const token = localStorage.getItem("accessToken") 
+  export async function createOption(question_option: number, word_phrase:number,is_correct:boolean) { 
     const response = await fetch(`${API_BASE_URL}/api/questions/options/`, {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${token}`,
         "Content-Type": "application/json",
         Accept: "application/json",
       },
+      credentials:'include',
       body: JSON.stringify({question_option,word_phrase,is_correct}),
     })
   
@@ -93,18 +89,12 @@ export async function fetchQuestionsOfLesson(id:number,setQuestions:any) {
   }
   export async function createQuestion(lesson: number, question_type: number, text: string) {
     try {
-      const token = localStorage.getItem("accessToken");
-      console.log(JSON.stringify({
-        lesson, 
-        question_type,
-        text
-      }))
       const response = await fetch(`${API_BASE_URL}/api/questions/`, {
         method: "POST",
         headers: {
-          "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json",
         },
+        credentials:'include',
         body: JSON.stringify({
           lesson, 
           question_type,
@@ -139,15 +129,14 @@ export async function fetchQuestionsOfLesson(id:number,setQuestions:any) {
     return questionId
   }
   export async function updateQuestion(id:number,lesson:number,question_type:number,text:string) {
-    try {
-      const token = localStorage.getItem("accessToken") 
+    try { 
       const response = await fetch(`${API_BASE_URL}/api/questions/${id}/
         `, {
         method: "PUT",
-        headers: {
-          "Authorization": `Bearer ${token}`, 
+        headers: { 
           "Content-Type": "application/json",
         },
+        credentials:'include',
         body: JSON.stringify({lesson,question_type,text})
       })
 
@@ -159,15 +148,14 @@ export async function fetchQuestionsOfLesson(id:number,setQuestions:any) {
       console.error("Error updating progress:", error)
     }
   }  
-  export async function deleteQuestion(id:number) {
-    const token = localStorage.getItem("accessToken") 
+  export async function deleteQuestion(id:number) { 
     const response = await fetch(`${API_BASE_URL}/api/questions/${id}/`, {
       method: "DELETE",
       headers: {
-        "Authorization": `Bearer ${token}`,
         "Content-Type": "application/json",
         Accept: "application/json",
-      }
+      },
+      credentials:'include'
     })
   
     if (!response.ok) {
