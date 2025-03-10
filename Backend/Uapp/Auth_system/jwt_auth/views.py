@@ -37,8 +37,10 @@ class CookieTokenRefreshView(APIView):
             return Response({"detail": "Token inválido o expirado"}, status=status.HTTP_401_UNAUTHORIZED)
 
 class LogoutView(APIView):
+
     def post(self, request):
-        response = Response({"detail": "Logout exitoso"}, status=status.HTTP_200_OK)
-        response.delete_cookie('access_token')
-        response.delete_cookie('refresh_token')
+        response = Response({"message": "Logout exitoso"}, status=200)
+        response.delete_cookie("access_token", samesite="None")
+        response.delete_cookie("refresh_token", samesite="None")
         return response
+        
