@@ -11,11 +11,12 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
+IS_PRODUCTION = os.getenv("DJANGO_ENV") == "production"
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
@@ -30,7 +31,7 @@ DEBUG = True
 # Application definition
 
 INSTALLED_APPS = [
-   
+        'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -38,7 +39,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-     'corsheaders',
     'rest_framework_simplejwt',
     'Auth_system.Users',
     'Auth_system.jwt_auth',
@@ -61,6 +61,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'Auth_system.jwt_auth.middlewares.CookieToHeaderMiddleware'
 ]
 
 ROOT_URLCONF = 'Uapp.urls'
@@ -152,7 +153,17 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,  # Invalidar el token antiguo
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
+# SESSION_COOKIE_SECURE = False  # Solo True si usas HTTPS
+# SESSION_COOKIE_SAMESITE = "None"  # Importante para peticiones entre dominios distintos
+# SESSION_COOKIE_HTTPONLY = True  # Prueba con False para depuración
 
-CORS_ORIGIN_WHITELIST = (
-    'http://localhost:3000',
-)
+# CSRF_COOKIE_SECURE = False  
+# CSRF_COOKIE_SAMESITE = "None"
+# CSRF_COOKIE_HTTPONLY = True
+
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = [
+    "http://127.0.0.1:3000",
+    "http://localhost:3000"
+]
+CSRF_TRUSTED_ORIGINS = ["http://127.0.0.1:3000", "http://localhost:3000"]

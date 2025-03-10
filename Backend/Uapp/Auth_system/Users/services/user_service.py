@@ -1,6 +1,7 @@
 from django.http import JsonResponse
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
+from rest_framework.response import Response
 from ..repositories.user_repository import UserRepository,UserProgressRepository,RoleRepository
 
 
@@ -24,7 +25,7 @@ class UserService:
         """Genera tokens de acceso y refresco para un usuario"""
         refresh = RefreshToken.for_user(user)
         refresh.access_token['role'] = user.role  
-        response = JsonResponse({"message": "Login exitoso"})
+        response = Response({"message": "Login exitoso"},status=201)
         
         # Configurar cookie HTTP-only para el token de acceso
         response.set_cookie(
@@ -32,8 +33,8 @@ class UserService:
             value=str(refresh.access_token),
             httponly=True,  # Evita acceso desde JavaScript
             secure=True,  # Solo funciona en HTTPS
-            samesite="Strict",  # Evita envío en peticiones de terceros
             max_age=3600,  # Expira en 1 hora
+            samesite="None"
         )
 
         # Configurar cookie HTTP-only para el refresh token
@@ -42,8 +43,8 @@ class UserService:
             value=str(refresh),
             httponly=True,
             secure=True,
-            samesite="Strict",
             max_age=7 * 24 * 3600,  # Expira en 7 días
+            samesite="None"
         )
 
         return response
