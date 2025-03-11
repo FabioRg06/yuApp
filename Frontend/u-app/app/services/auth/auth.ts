@@ -17,23 +17,21 @@ export async function validateToken(): Promise<boolean> {
     }
   }
 
-export async function refreshAccessToken(): Promise<void> {
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/token/refresh/`, {
-        method: "POST",
-        credentials: "include", 
-      });
-
-      if (!response.ok) {
-        throw new Error("No se pudo renovar el token");
-      }
-
-      
-    } catch (error) {
-      console.error("Error al renovar el token de acceso", error);
-      throw error;
+export async function refreshAccessToken(): Promise<boolean> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/token/refresh/`, {
+      method: "POST",
+      credentials: "include",
+    });
+    if(!response.ok){
+      throw new Error();
     }
+    return response.ok;
+  } catch (error) {
+    console.error("Error al refrescar token:", error);
+    return false;
   }
+}
   
 export async function register(username: string, email: string, password: string) {
     const response = await fetch(`${API_BASE_URL}/api/user/register/`, {
