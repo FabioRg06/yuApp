@@ -28,7 +28,7 @@ class CookieTokenRefreshView(APIView):
                 key='access_token',
                 value=access_token,
                 httponly=True,
-                secure=False,  # Cambiar a True en producción con HTTPS
+                secure=True,  # Cambiar a True en producción con HTTPS
                 samesite='None',
                 max_age=60 * 15,  # Ejemplo: 15 minutos
             )
