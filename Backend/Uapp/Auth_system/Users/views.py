@@ -18,13 +18,13 @@ class RegisterView(generics.CreateAPIView):
 
         try:
             tokens = UserService.register_user(serializer.validated_data)
-            return Response(tokens, status=status.HTTP_201_CREATED)
+            return tokens
         
         except ValidationError as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         
         except Exception as e:
-            return Response({"error": "Error inesperado al registrar el usuario."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(data={"error": "Error inesperado al registrar el usuario."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class LoginView(generics.GenericAPIView):
     """Autentica un usuario y devuelve los tokens"""
