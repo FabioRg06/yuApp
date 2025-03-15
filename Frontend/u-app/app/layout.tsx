@@ -6,6 +6,7 @@ import "react-toastify/dist/ReactToastify.css"
 import Link from "next/link"
 import type React from "react"
 import { ThemeProvider } from "./context/ThemeContext"
+import { AuthProvider } from "./context/AuthContext"
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -32,10 +33,12 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className={`${poppins.variable} ${baloo.variable} font-sans`}>
-        <ThemeProvider>
-          <main>{children}</main>
-          <ToastContainer />
-        </ThemeProvider>
+        <AuthProvider>
+          <ThemeProvider>
+            <main>{children}</main>
+            <ToastContainer />
+          </ThemeProvider>
+        </AuthProvider>
       </body>
     </html>
   )

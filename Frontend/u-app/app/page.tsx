@@ -4,12 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useTheme } from "./context/ThemeContext";
 import { Sun, Moon } from "lucide-react";
-import { useAuth } from "./hooks/useAuth";
+import { useAuth } from "./context/AuthContext";
 import { useEffect } from "react"
 
 export default function AuthPage() {
+
   const { theme, toggleTheme } = useTheme();
-  const {checkToken,isLoading}= useAuth()
+  const {checkToken } = useAuth();
   useEffect(() => {
       
       checkToken();

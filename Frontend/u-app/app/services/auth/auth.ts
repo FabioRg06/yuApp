@@ -1,5 +1,5 @@
 import { API_BASE_URL } from "../api/api";
-
+import {User} from "../../utils/interfaces/interfaces"
 export async function validateToken(): Promise<boolean> {
     try {
       const response = await fetch(`${API_BASE_URL}/api/token/validate-token/`, {
@@ -86,3 +86,9 @@ export async function login(email: string, password: string) {
     }
   }
   
+
+export async function fetchProfile(): Promise<User> {
+  const res = await fetch(`${API_BASE_URL}/api/user/profile/`, { credentials: 'include' });
+  if (!res.ok) throw new Error('No se pudo cargar el perfil');
+  return res.json();
+}

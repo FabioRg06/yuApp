@@ -22,7 +22,6 @@ import Link from "next/link"
 import { Chapter, Lesson } from "@/app/utils/interfaces/interfaces"
 import { createLesson, deleteLesson, fetchLessons, updateLesson } from "@/app/services/api/lessons/api"
 import { fetchChapters } from "@/app/services/api/api"
-import { withAuth } from "@/app/utils/withAuth"
 
 
 function LessonsPage() {
@@ -178,4 +177,4 @@ function LessonsPage() {
   )
 }
 
-export default withAuth(LessonsPage)
+export default LessonsPage

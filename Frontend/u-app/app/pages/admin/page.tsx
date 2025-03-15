@@ -3,10 +3,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { BookOpen, GraduationCap, Users, MessageSquare } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { withAuth } from "@/app/utils/withAuth"
+import { ProtectedRoute } from "@/app/components/auth/ProtectedRoute"
 
 function AdminDashboard() {
   return (
+    <ProtectedRoute  roles={['admin']}>
     <div className="space-y-6">
       <h1 className="text-3xl font-bold text-wayuu-red">Panel de Administración</h1>
 
@@ -140,7 +141,8 @@ function AdminDashboard() {
         </Card>
       </div>
     </div>
+    </ProtectedRoute>
   )
 }
 
-export default withAuth(AdminDashboard)
+export default AdminDashboard

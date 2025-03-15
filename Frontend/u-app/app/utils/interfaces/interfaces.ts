@@ -49,3 +49,15 @@ export interface Lesson {
   questions: Question[]
   completed: boolean
 }
+
+
+export interface User {
+  username: string;
+  email: string;
+  role: Role; 
+}
+
+export interface Role{
+  id:number,
+  name:string
+}

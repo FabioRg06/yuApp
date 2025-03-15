@@ -1,6 +1,5 @@
 "use client"
 
-import { withAuth } from "@/app/utils/withAuth"
 import LessonHeader from "@/app/components/lessons/LessonHeader"
 import LessonCompletion from "@/app/components/lessons/LessonCompletion"
 import LessonProgress from "@/app/components/lessons/LessonProgress"
@@ -53,4 +52,4 @@ function LessonPage({ params }: { params: { id: string } }) {
   )
 }
 
-export default withAuth(LessonPage)
+export default LessonPage

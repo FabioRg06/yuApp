@@ -2,15 +2,15 @@ import { FormEvent } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/app/hooks/useAuth";
+import { useAuth } from "@/app/context/AuthContext";
 
 export default function RegisterForm() {
-  const { handleRegister, isLoading } = useAuth();
+  const { register, loading } = useAuth();
 
   const onSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    handleRegister(
+    register(
       formData.get("name") as string,
       formData.get("email") as string,
       formData.get("password") as string
@@ -32,8 +32,8 @@ export default function RegisterForm() {
           <Label htmlFor="password">Password</Label>
           <Input id="password" name="password" type="password" required />
         </div>
-        <Button type="submit" className="w-full bg-wayuu-red text-white" disabled={isLoading}>
-          {isLoading ? "Cargando..." : "Registrarse"}
+        <Button type="submit" className="w-full bg-wayuu-red text-white" disabled={loading}>
+          {loading ? "Cargando..." : "Registrarse"}
         </Button>
       </div>
     </form>
