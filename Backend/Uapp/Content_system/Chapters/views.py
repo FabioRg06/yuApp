@@ -1,6 +1,7 @@
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from Auth_system.jwt_auth.permissions import IsAdmin
 from .serializers import ChapterSerializer
 from .services.chapter_service import ChapterService
 
@@ -18,7 +19,7 @@ class ChapterList(generics.ListCreateAPIView):
 class ChapterDetail(generics.RetrieveUpdateDestroyAPIView):
     """Obtiene, actualiza o elimina un capítulo"""
     serializer_class = ChapterSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAdmin]
 
     def get_object(self):
         chapter = ChapterService.retrieve_chapter(self.kwargs["pk"])

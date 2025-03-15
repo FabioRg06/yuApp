@@ -8,7 +8,6 @@ class CookieToHeaderMiddleware(MiddlewareMixin):
     def process_request(self, request):
         excluded_paths = [
             '/api/token/refresh/',
-            '/api/token/validate-token/',
             '/api/user/login/',
             '/api/user/register/',
         ]

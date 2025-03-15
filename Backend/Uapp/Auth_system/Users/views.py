@@ -77,3 +77,9 @@ class RoleDetailView(generics.RetrieveUpdateDestroyAPIView):
             RoleService.delete_role(role.id)
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response({"error": "Lección no encontrada"}, status=status.HTTP_404_NOT_FOUND)
+class UserProfileView(generics.RetrieveAPIView):
+    permission_classes = [IsAuthenticated]  
+
+    def get(self, request):
+        user = CustomUserSerializer(request.user)
+        return Response(user.data, status=status.HTTP_200_OK)
