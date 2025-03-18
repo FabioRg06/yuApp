@@ -5,7 +5,7 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import type { Question } from "../utils/interfaces/interfaces"
+import { Question } from "@/app/utils/interfaces/interfaces"
 
 interface TranslationQuestionProps {
   question: Question

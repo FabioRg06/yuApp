@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { RefreshCw } from "lucide-react"
-import type { Question } from "../utils/interfaces/interfaces"
+import { Question } from "@/app/utils/interfaces/interfaces"
 
 interface MatchingQuestionProps {
   question: Question

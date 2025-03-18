@@ -25,7 +25,7 @@ import { WordPhrase,QuestionOption,QuestionType,Question } from "@/app/utils/int
 import { fetchWords } from "@/app/services/api/words/api"
 import {  createOption, createQuestionWithOptions, deleteQuestion, deleteQuestionOption, fetchQuestionsOfLesson, updateOption, updateQuestion } from "@/app/services/api/questions/api"
 import { text } from "stream/consumers"
-import { withAuth } from "@/app/utils/withAuth"
+
 
 
 function QuestionsPage({ params }: { params: { id: string } }) {
@@ -498,4 +498,4 @@ function QuestionsPage({ params }: { params: { id: string } }) {
   )
 }
 
-export default withAuth(QuestionsPage)
+export default QuestionsPage
