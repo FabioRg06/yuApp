@@ -12,7 +12,6 @@ interface HeaderProps {
 
 export default function Header({ theme, toggleTheme, handleLogout }: HeaderProps) {
   const {user} =useAuth()
-  console.log(user)
   return (
       <div className="sticky top-0 z-50">
         <header className="bg-white dark:bg-wayuu-dark-card shadow-md">
