@@ -25,5 +25,6 @@ urlpatterns = [
     path('api/lessons/',include('Content_system.Lessons.urls')),
     path('api/tags/',include('Content_system.Tags.urls')),
     path('api/word-phrases/',include('Content_system.WordPhrases.urls')),
-    path('api/questions/',include('Content_system.Questions.urls'))
+    path('api/questions/',include('Content_system.Questions.urls')),
+    path('api/stats/',include('Stats_system.user_stats.urls'))
 ]
