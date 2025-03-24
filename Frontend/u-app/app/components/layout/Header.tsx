@@ -3,6 +3,7 @@ import { Sun, Moon, Volume2, LogOut, ShieldAlert } from "lucide-react"
 import Link from "next/link"
 import ProgressStats from "./ProgressStats"
 import { useAuth } from "@/app/context/AuthContext"
+import { useEffect } from "react"
 
 interface HeaderProps {
   theme: string
@@ -11,7 +12,7 @@ interface HeaderProps {
 }
 
 export default function Header({ theme, toggleTheme, handleLogout }: HeaderProps) {
-  const {user} =useAuth()
+  const {user,stats} =useAuth()
   return (
       <div className="sticky top-0 z-50">
         <header className="bg-white dark:bg-wayuu-dark-card shadow-md">
@@ -65,7 +66,7 @@ export default function Header({ theme, toggleTheme, handleLogout }: HeaderProps
         <div
           className={`bg-white dark:bg-wayuu-dark-card border-t border-wayuu-teal/20 dark:border-wayuu-red/20 py-2 shadow-sm transition-all duration-300 `}>
           <div className="container mx-auto px-4 flex justify-center">
-            <ProgressStats hearts={5} points={120} streak={3} />
+            <ProgressStats hearts={stats.lives} points={stats.lessons_completed} streak={stats.streak} />
           </div>
         </div>
     </div>

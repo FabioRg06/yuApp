@@ -1,6 +1,7 @@
-const fetchUserStats = async () => {
+import { API_BASE_URL } from "../api";
+export const fetchUserStats = async () => {
     try {
-      const response = await fetch("/api/stats/", {
+      const response = await fetch(`${API_BASE_URL}/api/stats/`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -14,7 +15,7 @@ const fetchUserStats = async () => {
       return { lives: 5, lessons_completed: 0, streak: 0 }; // Valores por defecto en caso de error
     }
   };
-  const handleWrongAnswer = async () => {
+  export const handleWrongAnswer = async () => {
     await fetch("/api/stats/decrement-life/", {
       method: "POST",
       headers: {

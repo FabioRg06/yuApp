@@ -1,6 +1,7 @@
 "use client"
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { validateToken, refreshAccessToken, logout as apiLogout,login as apiLogin,register as apiRegister,fetchProfile } from '../services/auth/auth'; // Reutilizas tus funciones de API
+import { fetchUserStats } from '../services/api/stats/api';
 import { useRouter } from 'next/navigation';
 import { User } from '../utils/interfaces/interfaces';
 import { toast } from 'react-toastify';
@@ -10,6 +11,7 @@ interface AuthContextType {
   user: User | null;
   loading: boolean;
   isAuthenticated: boolean;
+  stats: { lives: number, lessons_completed: number, streak: number };
   login: (email: string, password: string) => Promise<void>;
   register:(email: string, password: string,username:string) => Promise<void>;
   logout: () => void;
@@ -30,6 +32,7 @@ export const useAuth = (): AuthContextType => {
 // Provider
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [stats, setStats] = useState({ lives: 5, lessons_completed: 0, streak: 0 });
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
@@ -91,15 +94,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } catch (error) {
       console.log("Token inválido o expirado:", error)
     }
-}
+  }
+  const getStats= async ()=>{
+    try {
+      const stats= await fetchUserStats()
+      setStats(stats);
+    } catch (error) {
+      toast.error("Error: " + (error instanceof Error ? error.message : "Desconocido"));
+    }
+  }
 
   // Cargar autenticación al montar
   useEffect(() => {
     checkAuth();
+    getStats();
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, loading, isAuthenticated: !!user, login, logout, checkAuth,checkToken,register }}>
+    <AuthContext.Provider value={{ user, loading, stats,isAuthenticated: !!user, login, logout, checkAuth,checkToken,register }}>
       {children}
     </AuthContext.Provider>
   );
