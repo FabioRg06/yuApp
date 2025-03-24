@@ -14,7 +14,7 @@ YuApp is an educational web application designed to preserve and promote the Way
 
 ## 📱View
 - **Home**
-![YuApp screen 1](assets/screenshot_1.PNG)
+![YuApp Screen](assets/screenshot_1.PNG)
 
 
 ## 🚀 Getting Started
