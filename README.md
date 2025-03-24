@@ -12,6 +12,11 @@ YuApp is an educational web application designed to preserve and promote the Way
 - **Role-Based Access**: Secure authentication with JWT, admin views for content management.
 - **Modern Tech Stack**: Backend in Django, frontend in React with NestJS.
 
+## 📱View
+- **Home**
+![YuApp screen 1](assets/screenshot_1.PNG)
+
+
 ## 🚀 Getting Started
 
 ### 1️⃣ Prerequisites
