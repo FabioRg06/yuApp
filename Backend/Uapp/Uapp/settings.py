@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     'Content_system.Lessons',
     'Content_system.Questions',
     'Content_system.Tags',
-    'Content_system.WordPhrases'
+    'Content_system.WordPhrases',
+    'Stats_system.user_stats'
 ]
 
 MIDDLEWARE = [
@@ -153,13 +154,7 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,  # Invalidar el token antiguo
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
-# SESSION_COOKIE_SECURE = False  # Solo True si usas HTTPS
-# SESSION_COOKIE_SAMESITE = "None"  # Importante para peticiones entre dominios distintos
-# SESSION_COOKIE_HTTPONLY = True  # Prueba con False para depuración
 
-# CSRF_COOKIE_SECURE = False  
-# CSRF_COOKIE_SAMESITE = "None"
-# CSRF_COOKIE_HTTPONLY = True
 
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
