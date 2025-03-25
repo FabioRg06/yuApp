@@ -9,20 +9,28 @@ export function useQuestionFeedback() {
 
   const showCorrectFeedback = () => {
     setShowFeedback(true)
-    showMessage({
-      text: "¡Muy bien! Estás aprendiendo rápido.",
-      duration: 3000,
-      position: "right",
-    })
+
+    // Solo mostrar la mascota ocasionalmente (20% de probabilidad)
+    if (Math.random() < 0.05) {
+      showMessage({
+        text: "¡Muy bien! Estás aprendiendo rápido.",
+        duration: 4000,
+        position: "right",
+      })
+    }
   }
 
   const showIncorrectFeedback = () => {
     setShowFeedback(true)
-    showMessage({
-      text: "No te preocupes, sigue intentando. ¡Tú puedes!",
-      duration: 3000,
-      position: "right",
-    })
+
+    // Solo mostrar la mascota ocasionalmente (30% de probabilidad)
+    if (Math.random() < 0.07) {
+      showMessage({
+        text: "No te preocupes, sigue intentando. ¡Tú puedes!",
+        duration: 4000,
+        position: "right",
+      })
+    }
   }
 
   return {
@@ -32,4 +40,5 @@ export function useQuestionFeedback() {
     showIncorrectFeedback,
   }
 }
+
 

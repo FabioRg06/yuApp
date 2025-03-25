@@ -7,6 +7,7 @@ import Link from "next/link"
 import type React from "react"
 import { ThemeProvider } from "./context/ThemeContext"
 import { AuthProvider } from "./context/AuthContext"
+import { MascotProvider } from "./context/MascotContext"
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -35,8 +36,10 @@ export default function RootLayout({
       <body className={`${poppins.variable} ${baloo.variable} font-sans`}>
         <AuthProvider>
           <ThemeProvider>
-            <main>{children}</main>
-            <ToastContainer />
+            <MascotProvider>
+              <main>{children}</main>
+              <ToastContainer />
+            </MascotProvider>
           </ThemeProvider>
         </AuthProvider>
       </body>

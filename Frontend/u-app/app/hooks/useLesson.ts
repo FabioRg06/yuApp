@@ -1,11 +1,13 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { fetchLessons, updateProgress } from "@/app/services/api/api"
 import type { Lesson } from "@/app/utils/interfaces/interfaces"
 import { toast } from "react-toastify"
 import { useTheme } from "@/app/context/ThemeContext"
+// Asegúrate de que esta importación esté correcta
+import { useMascot } from "@/app/context/MascotContext"
 
 export function useLesson(lessonId: string) {
   const router = useRouter()
@@ -18,18 +20,42 @@ export function useLesson(lessonId: string) {
   const [isProcessingAnswer, setIsProcessingAnswer] = useState(false)
   const [isReviewMode, setIsReviewMode] = useState(false)
   const { theme } = useTheme()
+  const { showMessage } = useMascot()
 
   // Cargar la lección
+  const welcomeMessageShownRef = useRef(false)
+
   useEffect(() => {
     fetchLessons(setLesson, lessonId)
-  }, [lessonId])
+
+    // Mostrar mensaje de bienvenida solo una vez con 50% de probabilidad
+    if (!welcomeMessageShownRef.current && Math.random() < 0.5) {
+      welcomeMessageShownRef.current = true
+      setTimeout(() => {
+        showMessage({
+          text: "¡Bienvenido a la lección! Estoy aquí para acompañarte en tu aprendizaje.",
+          duration: 6000,
+          position: "right",
+        })
+      }, 1500)
+    }
+  }, [lessonId, showMessage])
 
   // Actualizar el progreso cuando cambia
   useEffect(() => {
     if (progress > 0 && lesson) {
       updateProgress(lessonId, progress)
+
+      // Mostrar mensaje de ánimo al alcanzar el 50% de progreso
+      if (progress >= 50 && progress < 55) {
+        showMessage({
+          text: "¡Ya vas por la mitad! Sigue así, lo estás haciendo genial.",
+          duration: 5000,
+          position: "left",
+        })
+      }
     }
-  }, [lessonId, progress, lesson])
+  }, [lessonId, progress, lesson, showMessage])
 
   // Función para manejar el avance a la siguiente pregunta
   const moveToNextQuestion = () => {
@@ -46,7 +72,13 @@ export function useLesson(lessonId: string) {
         // Si no hay más preguntas fallidas, completar la lección
         setLessonCompleted(true)
         setProgress(100)
-        toast.success("¡Lección completada!", { theme: theme === "dark" ? "dark" : "light" })
+
+        // Mostrar mensaje de felicitación al completar la lección
+        showMessage({
+          text: "¡Felicidades! Has completado la lección con éxito. ¡Sigue practicando!",
+          duration: 7000,
+          position: "right",
+        })
       }
       return
     }
@@ -59,16 +91,44 @@ export function useLesson(lessonId: string) {
         const nextFailedIndex = failedQuestions[0]
         setFailedQuestions(failedQuestions.slice(1))
         setCurrentQuestionIndex(nextFailedIndex)
-        toast.info("Vamos a repasar las preguntas que fallaste", { theme: theme === "dark" ? "dark" : "light" })
+       
+
+        // Mensaje para el modo de repaso - Asegurar que este mensaje se muestre
+        // Usar setTimeout para asegurar que se muestre después de que el estado se actualice
+        setTimeout(() => {
+          showMessage({
+            text: "Ahora vamos a repasar las preguntas que te resultaron difíciles.",
+            duration: 5000,
+            position: "left",
+          })
+        }, 300)
       } else {
         // Si no hay preguntas fallidas, completar la lección
         setLessonCompleted(true)
         setProgress(100)
-        toast.success("¡Lección completada!", { theme: theme === "dark" ? "dark" : "light" })
+       
+
+        // Mensaje de felicitación al completar la lección perfectamente
+        showMessage({
+          text: "¡Increíble! Has completado la lección sin errores. ¡Eres un estudiante excepcional!",
+          duration: 7000,
+          position: "right",
+        })
       }
     } else {
       // Avanzar a la siguiente pregunta normal
       setCurrentQuestionIndex((prev) => prev + 1)
+
+      // Ocasionalmente mostrar un mensaje de ánimo entre preguntas (10% de probabilidad)
+      if (Math.random() < 0.1) {
+        setTimeout(() => {
+          showMessage({
+            text: "¡Sigamos adelante! Cada pregunta te acerca más a dominar el wayuunaiki.",
+            duration: 4000,
+            position: Math.random() > 0.5 ? "right" : "left",
+          })
+        }, 1000)
+      }
     }
 
     // Actualizar el progreso
@@ -102,7 +162,6 @@ export function useLesson(lessonId: string) {
         setFailedQuestions((prev) => [...prev, currentQuestionIndex])
       }
 
-      toast.error("Intenta de nuevo", { theme: theme === "dark" ? "dark" : "light" })
       setIsProcessingAnswer(false)
 
       // No avanzamos automáticamente - el usuario debe hacer clic en "Continuar"
