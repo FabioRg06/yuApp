@@ -2,14 +2,15 @@
 
 import { useState } from "react"
 import type { Question } from "@/app/utils/interfaces/interfaces"
+import { useQuestionFeedback } from "./useQuestionFeedback"
 
 export function useMultipleChoice(question: Question, onAnswer: (answerId: number) => void) {
   // Decidir aleatoriamente si mostramos opciones en español o wayuunaiki
   const [showSpanishOptions] = useState(Math.random() > 0.5)
   // Estado para la opción seleccionada
   const [selectedOption, setSelectedOption] = useState<number | null>(null)
-  // Estado para mostrar feedback
-  const [showFeedback, setShowFeedback] = useState(false)
+  // Feedback
+  const { showFeedback, setShowFeedback, showCorrectFeedback, showIncorrectFeedback } = useQuestionFeedback()
 
   // Obtener la opción correcta
   const correctOption = question.question_option.find((opt) => opt.is_correct)
@@ -27,6 +28,14 @@ export function useMultipleChoice(question: Question, onAnswer: (answerId: numbe
     setSelectedOption(optionId)
     setShowFeedback(true)
 
+    // Mostrar feedback con mascota
+    const isOptionCorrect = question.question_option.find((opt) => opt.id === optionId)?.is_correct === true
+    if (isOptionCorrect) {
+      showCorrectFeedback()
+    } else {
+      showIncorrectFeedback()
+    }
+
     // Notificar al componente padre
     onAnswer(optionId)
   }
@@ -39,6 +48,21 @@ export function useMultipleChoice(question: Question, onAnswer: (answerId: numbe
     }
   }
 
+  // Obtener textos para la pregunta
+  const getQuestionTexts = () => {
+    return {
+      wordToTranslate: showSpanishOptions
+        ? correctOption?.word_phrase.text_wayuunaiki || ""
+        : correctOption?.word_phrase.text_spanish || "",
+      translation: showSpanishOptions
+        ? correctOption?.word_phrase.text_spanish || ""
+        : correctOption?.word_phrase.text_wayuunaiki || "",
+      correctAnswer: showSpanishOptions
+        ? correctOption?.word_phrase.text_spanish || ""
+        : correctOption?.word_phrase.text_wayuunaiki || "",
+    }
+  }
+
   return {
     showSpanishOptions,
     selectedOption,
@@ -47,6 +71,7 @@ export function useMultipleChoice(question: Question, onAnswer: (answerId: numbe
     isCorrect,
     handleOptionClick,
     handleContinue,
+    getQuestionTexts,
   }
 }
 

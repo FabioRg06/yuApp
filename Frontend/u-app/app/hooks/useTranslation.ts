@@ -4,6 +4,7 @@ import type React from "react"
 
 import { useState, useEffect } from "react"
 import type { Question } from "@/app/utils/interfaces/interfaces"
+import { useQuestionFeedback } from "./useQuestionFeedback"
 
 export function useTranslation(question: Question, onAnswer: (answer: string) => void) {
   // Estado para la respuesta del usuario
@@ -18,6 +19,8 @@ export function useTranslation(question: Question, onAnswer: (answer: string) =>
   const [isCorrect, setIsCorrect] = useState(false)
   // Obtener la respuesta correcta
   const correctAnswer = question.question_option[0].word_phrase
+  // Feedback
+  const { showCorrectFeedback, showIncorrectFeedback } = useQuestionFeedback()
 
   // Establecer la dirección de traducción solo una vez al montar el componente
   useEffect(() => {
@@ -41,6 +44,13 @@ export function useTranslation(question: Question, onAnswer: (answer: string) =>
     setIsCorrect(isAnswerCorrect)
     setHasSubmitted(true)
 
+    // Mostrar feedback con mascota
+    if (isAnswerCorrect) {
+      showCorrectFeedback()
+    } else {
+      showIncorrectFeedback()
+    }
+
     // Notificar al componente padre
     onAnswer(userAnswer)
   }
@@ -61,6 +71,15 @@ export function useTranslation(question: Question, onAnswer: (answer: string) =>
   const handleMouseLeave = () => setShowTranslation(false)
   const handleTouchStart = () => setShowTranslation(!showTranslation)
 
+  // Obtener textos para la pregunta
+  const getQuestionTexts = () => {
+    return {
+      wordToTranslate: translateToWayuunaiki ? correctAnswer.text_spanish : correctAnswer.text_wayuunaiki,
+      translation: translateToWayuunaiki ? correctAnswer.text_wayuunaiki : correctAnswer.text_spanish,
+      correctAnswer: translateToWayuunaiki ? correctAnswer.text_wayuunaiki : correctAnswer.text_spanish,
+    }
+  }
+
   return {
     answer,
     translateToWayuunaiki,
@@ -74,6 +93,7 @@ export function useTranslation(question: Question, onAnswer: (answer: string) =>
     handleMouseEnter,
     handleMouseLeave,
     handleTouchStart,
+    getQuestionTexts,
   }
 }
 

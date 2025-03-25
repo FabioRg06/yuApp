@@ -26,10 +26,8 @@ export default function MatchingQuestion({ question, onAnswer }: MatchingQuestio
     resetMatches,
     handleContinue,
     isMatched,
+    getMatchedRightIds,
   } = useMatching(question, onAnswer)
-
-  // Obtener los IDs de las opciones de la derecha que ya están emparejadas
-  const matchedRightIds = Object.values(matches)
 
   return (
     <div>
@@ -73,7 +71,7 @@ export default function MatchingQuestion({ question, onAnswer }: MatchingQuestio
         hasSubmitted={hasSubmitted}
         handleLeftClick={handleLeftClick}
         handleRightClick={handleRightClick}
-        matchedRightIds={matchedRightIds}
+        matchedRightIds={getMatchedRightIds()}
       />
 
       {/* Mostrar respuestas correctas después de un intento fallido */}

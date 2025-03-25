@@ -17,20 +17,13 @@ export default function MultipleChoiceQuestion({ question, onAnswer }: MultipleC
     showSpanishOptions,
     selectedOption,
     showFeedback,
-    correctOption,
     isCorrect,
     handleOptionClick,
     handleContinue,
+    getQuestionTexts,
   } = useMultipleChoice(question, onAnswer)
 
-  // Obtener el texto de la pregunta y la traducción
-  const wordToTranslate = showSpanishOptions
-    ? correctOption?.word_phrase.text_wayuunaiki || ""
-    : correctOption?.word_phrase.text_spanish || ""
-
-  const translation = showSpanishOptions
-    ? correctOption?.word_phrase.text_spanish || ""
-    : correctOption?.word_phrase.text_wayuunaiki || ""
+  const { wordToTranslate, translation, correctAnswer } = getQuestionTexts()
 
   return (
     <div>
@@ -39,12 +32,7 @@ export default function MultipleChoiceQuestion({ question, onAnswer }: MultipleC
 
       {/* Mensaje de feedback - solo se muestra después de seleccionar */}
       {showFeedback && selectedOption !== null && (
-        <FeedbackMessage
-          isCorrect={isCorrect}
-          correctAnswer={
-            showSpanishOptions ? correctOption?.word_phrase.text_spanish : correctOption?.word_phrase.text_wayuunaiki
-          }
-        />
+        <FeedbackMessage isCorrect={isCorrect} correctAnswer={correctAnswer} />
       )}
 
       {/* Opciones de respuesta */}

@@ -20,19 +20,16 @@ export default function TranslationQuestion({ question, onAnswer }: TranslationQ
     showTranslation,
     hasSubmitted,
     isCorrect,
-    correctAnswer,
     handleSubmit,
     handleContinue,
     handleInputChange,
     handleMouseEnter,
     handleMouseLeave,
     handleTouchStart,
+    getQuestionTexts,
   } = useTranslation(question, onAnswer)
 
-  // Obtener el texto de la pregunta y la traducción
-  const wordToTranslate = translateToWayuunaiki ? correctAnswer.text_spanish : correctAnswer.text_wayuunaiki
-
-  const translation = translateToWayuunaiki ? correctAnswer.text_wayuunaiki : correctAnswer.text_spanish
+  const { wordToTranslate, translation, correctAnswer } = getQuestionTexts()
 
   return (
     <div>
@@ -48,12 +45,7 @@ export default function TranslationQuestion({ question, onAnswer }: TranslationQ
       />
 
       {/* Mensaje de feedback */}
-      {hasSubmitted && (
-        <FeedbackMessage
-          isCorrect={isCorrect}
-          correctAnswer={translateToWayuunaiki ? correctAnswer.text_wayuunaiki : correctAnswer.text_spanish}
-        />
-      )}
+      {hasSubmitted && <FeedbackMessage isCorrect={isCorrect} correctAnswer={correctAnswer} />}
 
       {/* Formulario de respuesta */}
       <form onSubmit={handleSubmit} className="space-y-4">

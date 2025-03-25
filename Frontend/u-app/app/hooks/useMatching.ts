@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import type { Question } from "@/app/utils/interfaces/interfaces"
+import { useQuestionFeedback } from "./useQuestionFeedback"
 
 export function useMatching(question: Question, onAnswer: (matches: { [key: number]: number }) => void) {
   // Estado para la opción seleccionada del lado izquierdo
@@ -17,6 +18,8 @@ export function useMatching(question: Question, onAnswer: (matches: { [key: numb
   const [rightOptions, setRightOptions] = useState<typeof question.question_option>([])
   // Estado para indicar si se ha enviado la respuesta
   const [hasSubmitted, setHasSubmitted] = useState(false)
+  // Feedback
+  const { showCorrectFeedback, showIncorrectFeedback } = useQuestionFeedback()
 
   // Crear arrays de palabras únicas para ambos idiomas
   useEffect(() => {
@@ -74,10 +77,14 @@ export function useMatching(question: Question, onAnswer: (matches: { [key: numb
         })
 
         if (allCorrect) {
+          // Mostrar feedback positivo
+          showCorrectFeedback()
           // Notificar al componente padre
           onAnswer(newMatches)
         } else {
           setHasError(true)
+          // Mostrar feedback negativo
+          showIncorrectFeedback()
           // Mostrar respuestas correctas después de un intento fallido
           setShowCorrectAnswers(true)
           // Notificar al componente padre (respuesta incorrecta)
@@ -114,6 +121,9 @@ export function useMatching(question: Question, onAnswer: (matches: { [key: numb
   // Verificar si una opción ya está emparejada
   const isMatched = (id: number) => Object.keys(matches).includes(id.toString())
 
+  // Obtener los IDs de las opciones de la derecha que ya están emparejadas
+  const getMatchedRightIds = () => Object.values(matches)
+
   return {
     selectedLeft,
     matches,
@@ -127,6 +137,7 @@ export function useMatching(question: Question, onAnswer: (matches: { [key: numb
     resetMatches,
     handleContinue,
     isMatched,
+    getMatchedRightIds,
   }
 }
 
