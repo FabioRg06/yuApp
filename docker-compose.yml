@@ -1,0 +1,51 @@
+
+services:
+  db:
+    image: postgres:latest
+    container_name: uapp_db
+    restart: always
+    environment:
+      POSTGRES_DB: uapp_db
+      POSTGRES_USER: uapp_user
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build: ./Backend  # Ruta del backend
+    container_name: uapp_backend
+    restart: always
+    depends_on:
+      - db
+    environment:
+      POSTGRES_DB: uapp_db
+      POSTGRES_USER: uapp_user
+      POSTGRES_PASSWORD: password
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+    volumes:
+      - ./Backend:/app  # Monta el backend
+      - ./media:/app/media  # Para imágenes
+    ports:
+      - "8000:8000"
+    command: >
+      sh -c "python Uapp/manage.py migrate &&
+           python Uapp/manage.py runserver 0.0.0.0:8000"
+  frontend:
+    build: ./Frontend/u-app  # Ruta del frontend
+    container_name: uapp_frontend
+    restart: always
+    depends_on:
+      - backend
+    environment:
+      NEXT_PUBLIC_API_URL: "http://localhost:8000"
+    volumes:
+      - ./Frontend/u-app:/app
+    ports:
+      - "3000:3000"
+    command: "npm run dev"
+
+volumes:
+  postgres_data:
