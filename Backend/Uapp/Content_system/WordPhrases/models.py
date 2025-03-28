@@ -12,7 +12,7 @@ class WordPhrase(models.Model):
 
     text_wayuunaiki = models.CharField(max_length=200)
     text_spanish = models.CharField(max_length=200)
-    type = models.CharField(max_length=10, choices=TYPE_CHOICES,default=WORD) 
+    type = models.CharField(max_length=50, choices=TYPE_CHOICES,default=WORD) 
     tags = models.ManyToManyField(Tag, related_name="word_phrases", default=1)  
     is_known = models.BooleanField(default=False)
 

@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='wordphrase',
             name='type',
-            field=models.CharField(choices=[('word', 'Word'), ('phrase', 'Phrase')], default=('word', 'Word'), max_length=10),
+            field=models.CharField(choices=[('word', 'Word'), ('phrase', 'Phrase')], default='word', max_length=10),
         ),
         migrations.AlterField(
             model_name='wordphrase',
